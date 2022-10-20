@@ -1,0 +1,163 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #ff8800;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes itemTitle-appear {
+  0% {
+    visibility: hidden;
+  }
+  90% {
+    visibility: hidden;
+  }
+  100% {
+    visibility: initial;
+  }
+}
+
+@keyframes sidebar-expand {
+  from {
+    width: 60px;
+  }
+  to {
+    width: 250px
+  }
+}
+
+.sidebar {
+  background-color: black;
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  transition: 300ms;
+  font-size: 20px;
+  transition-delay: 1s;
+  z-index: 100;
+}
+
+.sidebar:hover {
+  width: 250px;
+  transition: 300ms;
+  /* animation: sidebar-expand 300ms forwards; */
+}
+
+.sidebar:hover .itemTitle {
+  animation: itemTitle-appear 300ms forwards;
+}
+
+.sidebarHeader {
+  position: relative;
+  display: flex;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 60px;
+  overflow: hidden;
+  color: #ffffff;
+  justify-content: left;
+  padding-left: 10px;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.sidebarIcon {
+  width: 40px;
+  height: 40px;
+}
+
+.sidebarItemsList {
+  margin-top: 120px;
+}
+
+.sidebarItem {
+  width: 250px;
+  height: 60px;
+  padding-left: 10px;
+  transition: 300ms;
+  overflow: hidden;
+}
+
+.sidebarItem a {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  vertical-align: middle;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.sidebarItem:hover {
+  color: rgb(77, 169, 255);
+  transition: 300ms;
+}
+
+.itemTitle {
+  visibility: hidden;
+  margin-left: 10px;
+}
+
+.content {
+  position: absolute;
+  top: 0;
+  left: 60px;
+  width: calc(100% - 60px);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolContainer {
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
+  background-color: rgba(85, 85, 85, 0.65);
+  color:#ffffff;
+}
+
+.toolHeader {
+  height: 80px;
+  padding-left: 10px;
+  font-size: 40px;
+  color: #ffffff;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  vertical-align: middle;
+}

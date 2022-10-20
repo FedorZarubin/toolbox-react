@@ -1,0 +1,14 @@
+#auditGrid {
+    display: grid;
+    grid-template-rows: 40px 40px 17px 40px 17px;
+    grid-template-columns: 20% 40% 12% 28%;
+    align-items: center;
+    justify-items: flex-start;
+    margin: 10px 10px 20px 10px;
+
+}
+
+#auditGrid .info {
+    grid-column-start: 2;
+    grid-column-end: span 3;
+}
