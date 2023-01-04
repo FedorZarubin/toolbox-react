@@ -1,14 +1,53 @@
+
+
+.fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
 #auditGrid {
     display: grid;
+    width: 60%;
     grid-template-rows: 40px 40px 17px 40px 17px;
-    grid-template-columns: 20% 40% 12% 28%;
-    align-items: center;
-    justify-items: flex-start;
-    margin: 10px 10px 20px 10px;
+    grid-template-columns: 100px auto 100px auto;
+    align-items: stretch;
+    justify-items: stretch;
+}
 
+#auditGrid {
+    vertical-align: middle;
 }
 
 #auditGrid .info {
     grid-column-start: 2;
     grid-column-end: span 3;
+    font-size: 12px;
+}
+
+#options {
+    width: 40%;
+    display: grid;
+    grid-template-rows: 40px 40px;
+    grid-template-columns: 200px auto;
+}
+
+#buttons {
+    width: 100%;
+    height: fit-content;
+    background-color: rgba(61, 61, 61, 0.438);
+    margin-top: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    /* border-top: thin solid white;
+    border-bottom: thin solid white; */
+}
+
+.text_result {
+    background-color: rgba(77, 169, 255, 0.26);
+    width: 90%;
+    padding: 10px;
+    font-size: 16px;
+    position: relative;
+    left: 5%;
 }

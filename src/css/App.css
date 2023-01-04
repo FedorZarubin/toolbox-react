@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .App-logo {
@@ -39,12 +39,15 @@
 @keyframes itemTitle-appear {
   0% {
     visibility: hidden;
+    width: initial;
   }
   90% {
     visibility: hidden;
+    width: initial;
   }
   100% {
     visibility: initial;
+    width: 190px;
   }
 }
 
@@ -67,18 +70,21 @@
   width: 60px;
   transition: 300ms;
   font-size: 20px;
-  transition-delay: 1s;
+  transition-delay: 500ms;
   z-index: 100;
 }
 
 .sidebar:hover {
   width: 250px;
   transition: 300ms;
-  /* animation: sidebar-expand 300ms forwards; */
 }
 
 .sidebar:hover .itemTitle {
   animation: itemTitle-appear 300ms forwards;
+}
+
+.sidebar:hover .sidebarItem, .sidebar:hover .sidebarHeader {
+  width: 250px;
 }
 
 .sidebarHeader {
@@ -86,7 +92,7 @@
   display: flex;
   left: 0;
   top: 0;
-  width: 250px;
+  width: 60px;
   height: 60px;
   overflow: hidden;
   color: #ffffff;
@@ -106,7 +112,7 @@
 }
 
 .sidebarItem {
-  width: 250px;
+  width: fit-content;
   height: 60px;
   padding-left: 10px;
   transition: 300ms;
@@ -121,15 +127,17 @@
   cursor: pointer;
   color: #ffffff;
   text-decoration: none;
+  height: 60px;
 }
 
-.sidebarItem:hover {
+.sidebarItem:hover a {
   color: rgb(77, 169, 255);
   transition: 300ms;
 }
 
 .itemTitle {
   visibility: hidden;
+  width: 0px;
   margin-left: 10px;
 }
 
@@ -145,19 +153,38 @@
 }
 
 .toolContainer {
-  height: calc(100% - 20px);
-  width: calc(100% - 20px);
+  height: 100%;
+  width: 100%;
   background-color: rgba(85, 85, 85, 0.65);
   color:#ffffff;
 }
 
 .toolHeader {
+  background-color: rgba(61, 61, 61, 0.65);
   height: 80px;
-  padding-left: 10px;
+  padding-right: 20px;
   font-size: 40px;
   color: #ffffff;
   display: flex;
-  justify-content: left;
+  justify-content: right;
   align-items: center;
   vertical-align: middle;
+}
+
+.toolBody {
+  font-size: 20px;
+  position: absolute;
+  /* padding: 10px; */
+}
+
+.go {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  height: 40px;
+  width: 40px;
+  background-color: rgb(204, 204, 204);
+  align-content: flex-end;
+  border: none;
+  box-shadow: inset -1px -1px rgb(61, 61, 61), inset 1px 1px rgb(224, 224, 224);
 }

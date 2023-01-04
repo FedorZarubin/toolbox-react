@@ -1,10 +1,11 @@
 import React from "react";
+import ToolHeader from "./ToolHeader";
 
 class PrefsParse extends React.Component {
     render () {
         return (
             <div className="toolContainer">
-                <div className="toolHeader">Парсер префсов</div>
+                <ToolHeader value="Парсер префсов" />
                 <form >
                 </form>
             </div>
