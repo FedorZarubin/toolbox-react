@@ -3,6 +3,8 @@ import "../css/audit.css";
 import ToolHeader from "./ToolHeader.js";
 import TextResult from "./TextResult";
 import ButtonsBar from "./ButtonsBar";
+import Icon from "@mdi/react";
+import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircle } from "@mdi/js";
 
 const initialValues = {
     domain_name: "",
@@ -16,7 +18,7 @@ const initialValues = {
 class Audit extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = props.savedState ? props.savedState : {
             valuesToRender: Object.assign({},initialValues),
             result: null,
             isErr: false,
@@ -27,6 +29,10 @@ class Audit extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
     
+    componentWillUnmount(){
+        this.props.saveState(this.state)
+    }
+
     buildAuditCurl (e) {
         e.preventDefault();
         const defaultValues = {
@@ -80,10 +86,11 @@ class Audit extends React.Component {
                 })
             })
             .catch (error=> {
+                console.log(error);
                 this.setState({
                     isPending: false,
                     isErr: true,
-                    result: error,
+                    result: error.message,
                     valuesToRender: formValues
                 })
             })
@@ -116,21 +123,22 @@ class Audit extends React.Component {
                         <div className="fieldset">
                             <div id="auditGrid">
                                 <div><label htmlFor="domain_name">Домен:</label></div>
-                                <div><input type="text" id="domain_name" name="domain_name" placeholder="vo.megafon.ru" value={this.state.valuesToRender.domain_name} onChange={this.handleChange}/></div><div></div><div></div>
+                                <div><input type="text" id="domain_name" name="domain_name" placeholder="vo.megafon.ru" value={this.state.valuesToRender.domain_name} onChange={this.handleChange}/></div>
                                 <div><label htmlFor="dat_beg" >Начало:</label></div>
-                                <div><input type="date" name="dat_beg" id="dat_beg" value={this.state.valuesToRender.dat_beg} onChange={this.handleChange}/></div>
-                                <div><label htmlFor="time_beg">Время:</label></div>
-                                <div><input type="time" name="time_beg" id="time_beg" step="1" value={this.state.valuesToRender.time_beg} onChange={this.handleChange}/></div>
-                                <div></div><div className="info"> (по умолчанию - текущий день, время: 00-00-01)</div>
+                                <div>
+                                    <input type="date" name="dat_beg" id="dat_beg" value={this.state.valuesToRender.dat_beg} onChange={this.handleChange}/>
+                                    <input type="time" name="time_beg" id="time_beg" step="1" value={this.state.valuesToRender.time_beg} onChange={this.handleChange}/>
+                                </div>
                                 <div><label htmlFor="dat_end">Конец:</label></div>
-                                <div><input type="date" name="dat_end" id="dat_end" value={this.state.valuesToRender.dat_end} onChange={this.handleChange}/></div>
-                                <div><label htmlFor="time_end">Время:</label></div>
-                                <div><input type="time" name="time_end" id="time_end" step="1" value={this.state.valuesToRender.time_end} onChange={this.handleChange}/></div>
-                                <div></div><div className="info"> (по умолчанию - текущий день, время: 23-59-59)</div>
+                                <div>
+                                    <input type="date" name="dat_end" id="dat_end" value={this.state.valuesToRender.dat_end} onChange={this.handleChange}/>
+                                    <input type="time" name="time_end" id="time_end" step="1" value={this.state.valuesToRender.time_end} onChange={this.handleChange}/>
+                                </div>
                             </div>
                             <div id="options">
                                 <div><label htmlFor="searchStr">Поиск в результатах:</label></div><div><input type="text" id="searchStr" name="searchStr" value={this.state.valuesToRender.searchStr} onChange={this.handleChange}/></div>
-                                <div><label className="hidden_checkbox_lbl" htmlFor="case_sens">Учитывать регистр</label></div><div><input type="checkbox" id="case_sens" name="case_sens" checked={this.state.valuesToRender.case_sens} onChange={this.handleChange}/></div>
+                                <div><label className="hidden_checkbox_lbl" htmlFor="case_sens">Учитывать регистр</label><input type="checkbox" id="case_sens" name="case_sens" checked={this.state.valuesToRender.case_sens} onChange={this.handleChange}/></div>
+                                <div><label htmlFor="case_sens"><Icon path={this.state.valuesToRender.case_sens? mdiCheckboxMarkedCircle: mdiCheckboxBlankCircleOutline} size="30px"/></label></div>
                             </div>
                         </div>
                         <ButtonsBar 

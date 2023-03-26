@@ -1,5 +1,6 @@
 // import logo from '../img/logo.svg';
 import '../css/App.css';
+import React, {useState} from 'react';
 import Sidebar from "./Sidebar.js";
 import Audit from "./Audit.js";
 import PrefsParse from './PrefsParse.js';
@@ -11,6 +12,8 @@ import {
 } from "react-router-dom";
 
 function App() {
+  const [auditState, auditSaveState] = useState(null);
+  const [prefsParseState, prefsParseSaveState] = useState(null);
   return (
     <div className="App">
       <BrowserRouter>
@@ -18,8 +21,8 @@ function App() {
         <div className="content" >
           <Routes>
               <Route path='/' element={<Home/>} />
-              <Route path='audit' element={<Audit/>} />
-              <Route path='prefsParse' element={<PrefsParse/>} />
+              <Route path='audit' element={<Audit savedState={auditState} saveState={auditSaveState}/>} />
+              <Route path='prefsParse' element={<PrefsParse savedState={prefsParseState} saveState={prefsParseSaveState}/>} />
           </Routes>
         </div>
       </BrowserRouter>

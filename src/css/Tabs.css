@@ -1,0 +1,29 @@
+.tabLabel {
+    display: inline-block;
+    height: 40px;
+    width: fit-content;
+    background-color: rgb(80, 80, 80);
+    color: rgb(160, 160, 160);
+    cursor: pointer;
+    padding: 0 10px 0 10px;
+}
+
+.tabLabel>input {
+    display: none;
+}
+
+.tabLabel[active="true"] {
+    background-color: rgb(60, 60, 60);
+    color: white;
+}
+
+.tabContent {
+    width: 100%;
+    background-color: rgb(60, 60, 60);
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.fieldset>div {
+    width: 100%;
+}
