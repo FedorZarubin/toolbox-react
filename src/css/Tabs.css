@@ -6,6 +6,7 @@
     color: rgb(160, 160, 160);
     cursor: pointer;
     padding: 0 10px 0 10px;
+    box-sizing: border-box;
 }
 
 .tabLabel>input {

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import sidebarLogo from "../img/logo.svg"
 import '../css/App.css';
 import Icon from "@mdi/react";
-import { mdiFileTree, mdiHistory } from '@mdi/js'
+import { mdiFileTree, mdiHistory, mdiCalendarClockOutline} from '@mdi/js'
 
 class Sidebar extends React.Component {
     render () {
@@ -24,6 +24,12 @@ class Sidebar extends React.Component {
                         <Link to="/prefsParse">
                             <Icon path={mdiFileTree} size="40px"/>
                             <div className="itemTitle">Парсер префсов</div>
+                        </Link>
+                    </div>
+                    <div className="sidebarItem" val="dateConv">
+                        <Link to="/dateConv">
+                            <Icon path={mdiCalendarClockOutline} size="40px"/>
+                            <div className="itemTitle">Конвертер даты</div>
                         </Link>
                     </div>
                 </div>

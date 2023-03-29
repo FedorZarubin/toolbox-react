@@ -8,7 +8,7 @@
     justify-items: stretch;
 }
 
-#auditGrid>div:nth-of-type(2n), #options>div:first-of-type+div{
+#auditGrid>div:nth-of-type(2n), #options>div:first-of-type+div {
     background-color: rgb(160, 160, 160);
 }
 

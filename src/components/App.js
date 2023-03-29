@@ -10,10 +10,12 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import DateConv from './DateConv';
 
 function App() {
   const [auditState, auditSaveState] = useState(null);
   const [prefsParseState, prefsParseSaveState] = useState(null);
+  const [dateConvState, dateConvSaveState] = useState(null);
   return (
     <div className="App">
       <BrowserRouter>
@@ -23,6 +25,7 @@ function App() {
               <Route path='/' element={<Home/>} />
               <Route path='audit' element={<Audit savedState={auditState} saveState={auditSaveState}/>} />
               <Route path='prefsParse' element={<PrefsParse savedState={prefsParseState} saveState={prefsParseSaveState}/>} />
+              <Route path='dateConv' element={<DateConv savedState={dateConvState} saveState={dateConvSaveState}/>} />
           </Routes>
         </div>
       </BrowserRouter>

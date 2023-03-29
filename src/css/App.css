@@ -243,7 +243,7 @@ html {
   border: none;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"], input[type="radio"] {
   display: none;
 }
 
@@ -251,6 +251,22 @@ label {
   cursor: pointer;
   vertical-align: middle;
 }
+
+.radioBtnLabel {
+  display: inline-block;
+  height: 40px;
+  width: fit-content;
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px 0 10px;
+  box-sizing: border-box;
+}
+
+.radioBtn:checked+.radioBtnLabel {
+  background-color: rgba(26, 26, 26, 0.5);
+  color: rgb(77, 169, 255);
+}
+
 label svg {
   margin-top: 5px;
 }
@@ -267,18 +283,6 @@ textarea {
   overflow-x: hidden;
   resize: vertical;
 }
-
-/* input[type="checkbox"]+label {
-  height: 100%;
-  display: inline-block;
-  vertical-align: middle;
-  text-align: center;
-  border: thin solid black;
-  background-color: rgb(80, 80, 80);
-  cursor: pointer;
-  user-select: none;
-  color: rgb(70, 70, 70);
-} */
 
 .toolBody input:focus-visible, textarea:focus-visible, select:focus-visible {
   outline: none;
@@ -308,8 +312,6 @@ textarea {
   margin-top: 10px;
   padding: 10px;
   box-sizing: border-box;
-  /* border-top: thin solid white;
-  border-bottom: thin solid white; */
 }
 
 .buttons>div {
@@ -383,4 +385,21 @@ textarea {
 
 .param-row * {
   vertical-align: middle;
+}
+
+.optionsList {
+  width: calc(50% - 20px);
+  min-width: 478px;
+  display: grid;
+  grid-auto-rows: 40px;
+  row-gap: 20px;
+  grid-template-columns: 200px auto;
+}
+
+.optionsList>div:nth-of-type(2n) {
+  background-color: rgb(160, 160, 160);
+}
+
+.optionsList>div[transparent] {
+  background-color: transparent;
 }
