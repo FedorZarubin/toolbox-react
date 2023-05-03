@@ -1,3 +1,6 @@
+// input props example
+// content={[["tabName1", tabContent1],["tabName2", tabContent2]]} - 2 level array with name and content of each tab
+
 import React from "react";
 import "../css/Tabs.css"
 

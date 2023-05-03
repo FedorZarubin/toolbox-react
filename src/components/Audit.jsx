@@ -3,8 +3,7 @@ import "../css/audit.css";
 import ToolHeader from "./ToolHeader.js";
 import TextResult from "./TextResult";
 import ButtonsBar from "./ButtonsBar";
-import Icon from "@mdi/react";
-import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircle } from "@mdi/js";
+import Checkbox from "./Checkbox";
 
 const initialValues = {
     domain_name: "",
@@ -121,24 +120,29 @@ class Audit extends React.Component {
                 <div className="toolBody">
                     <form onSubmit={this.buildAuditCurl}>
                         <div className="fieldset">
-                            <div id="auditGrid">
+                            <div className="optionsList">
                                 <div><label htmlFor="domain_name">Домен:</label></div>
-                                <div><input type="text" id="domain_name" name="domain_name" placeholder="vo.megafon.ru" value={this.state.valuesToRender.domain_name} onChange={this.handleChange}/></div>
+                                <div className="generalInput"><input type="text" id="domain_name" name="domain_name" placeholder="vo.megafon.ru" size="40" value={this.state.valuesToRender.domain_name} onChange={this.handleChange}/></div>
                                 <div><label htmlFor="dat_beg" >Начало:</label></div>
-                                <div>
+                                <div className="generalInput">
                                     <input type="date" name="dat_beg" id="dat_beg" value={this.state.valuesToRender.dat_beg} onChange={this.handleChange}/>
                                     <input type="time" name="time_beg" id="time_beg" step="1" value={this.state.valuesToRender.time_beg} onChange={this.handleChange}/>
                                 </div>
                                 <div><label htmlFor="dat_end">Конец:</label></div>
-                                <div>
+                                <div className="generalInput">
                                     <input type="date" name="dat_end" id="dat_end" value={this.state.valuesToRender.dat_end} onChange={this.handleChange}/>
                                     <input type="time" name="time_end" id="time_end" step="1" value={this.state.valuesToRender.time_end} onChange={this.handleChange}/>
                                 </div>
                             </div>
-                            <div id="options">
-                                <div><label htmlFor="searchStr">Поиск в результатах:</label></div><div><input type="text" id="searchStr" name="searchStr" value={this.state.valuesToRender.searchStr} onChange={this.handleChange}/></div>
-                                <div><label className="hidden_checkbox_lbl" htmlFor="case_sens">Учитывать регистр</label><input type="checkbox" id="case_sens" name="case_sens" checked={this.state.valuesToRender.case_sens} onChange={this.handleChange}/></div>
-                                <div><label htmlFor="case_sens"><Icon path={this.state.valuesToRender.case_sens? mdiCheckboxMarkedCircle: mdiCheckboxBlankCircleOutline} size="30px"/></label></div>
+                            <div className="optionsList">
+                                <div><label htmlFor="searchStr">Поиск в результатах:</label></div>
+                                <div className="generalInput"><input type="text" id="searchStr" name="searchStr" value={this.state.valuesToRender.searchStr} onChange={this.handleChange}/></div>
+                                <div><label htmlFor="case_sens">Учитывать регистр</label></div>
+                                <Checkbox
+                                    cbName="case_sens"
+                                    isChecked={this.state.valuesToRender.case_sens}
+                                    handleChange={this.handleChange}
+                                />
                             </div>
                         </div>
                         <ButtonsBar 

@@ -5,6 +5,7 @@ import Tabs from "./Tabs";
 import TextResult from "./TextResult";
 import ITooLabs from "../auxiliary/cdata";
 import jObjProc from "../auxiliary/prefsFunc"
+import Select from "./Select";
 
 class PrefsParse extends React.Component {
     constructor (props) {
@@ -101,13 +102,22 @@ class PrefsParse extends React.Component {
             const lookupPrefs = (<div dangerouslySetInnerHTML={{__html: jObjProc(this.state.outJson)}}/>);
             const editPrefs = (
                     <React.Fragment>
-                        <div className="param-row">
+                        <div className="optionsList">
                             <div><span>Выберите блок префсов для редактирования: </span></div>
-                            <div><select name="prefs_block" onChange={this.selectChange} value={this.state.editPrefsOption}>
+                            <Select
+                                selectName="prefs_block"
+                                optList={["All"].concat(Object.keys(this.state.outJson)).map((item) => {
+                                    return [item,item]
+                                })}
+                                handleChange={this.selectChange}
+                                curValue={this.state.editPrefsOption}
+                                isMultiple={false}
+                            />
+                            {/* <div><select name="prefs_block" onChange={this.selectChange} value={this.state.editPrefsOption}>
                                 {["All"].concat(Object.keys(this.state.outJson)).map((item) => {
                                         return <option value={item}>{item}</option>
                                     })}
-                            </select></div>
+                            </select></div> */}
                         </div>
                         <textarea 
                             rows='20'

@@ -95,20 +95,20 @@ class DateConv extends Component {
         const ts2date = (
             <div className="optionsList">
                 <div><label htmlFor="ts">Введите timestamp</label></div>
-                <div><input type="text" name="ts" id="ts" value={this.state.ts} onChange={this.handleChange}/></div>
+                <div className="generalInput"><input type="text" name="ts" id="ts" value={this.state.ts} onChange={this.handleChange}/></div>
                 <div><label>Часовой пояс</label></div>
-                <RadioBtn btnName="tz1" btnList={[["msk","МСК"],["utc","UTC"]]}/>
+                <RadioBtn btnName="tz1" btnList={[["msk","МСК"],["utc","UTC"]]} handleChange={this.handleChange} curValue={this.state.tz1}/>
             </div>
         );
         const date2ts = (
             <div className="optionsList">
                 <div><label htmlFor="ts">Введите дату и время</label></div>
-                <div>
+                <div className="generalInput">
                     <input type="date" name="d" id="d" value={this.state.d} onChange={this.handleChange}/>
                     <input type="time" name="t" id="t" step="1" value={this.state.t} onChange={this.handleChange}/>
                 </div>
                 <div><label>Часовой пояс</label></div>
-                <RadioBtn btnName="tz2" btnList={[["msk","МСК"],["utc","UTC"]]}/>
+                <RadioBtn btnName="tz2" btnList={[["msk","МСК"],["utc","UTC"]]} handleChange={this.handleChange} curValue={this.state.tz2}/>
             </div>
         );
         const buttons = this.state.result? ["clear","copy"]:[];
