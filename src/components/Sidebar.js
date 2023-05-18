@@ -1,9 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import sidebarLogo from "../img/logo.svg";
 import '../css/App.css';
-import Icon from "@mdi/react";
-import { mdiFileTree, mdiHistory, mdiCalendarClockOutline, mdiNumeric} from '@mdi/js'
+// import { Link } from "react-router-dom";
+import sidebarLogo from "../img/logo.svg";
+// import Icon from "@mdi/react";
+// import { mdiFileTree, mdiHistory, mdiCalendarClockOutline, mdiNumeric} from '@mdi/js'
 
 class Sidebar extends React.Component {
     render () {
@@ -14,7 +14,7 @@ class Sidebar extends React.Component {
                     <div className="itemTitle">ITOOLABS ToolBox</div>
                 </div>
                 <div className="sidebarItemsList">
-                    <div className="sidebarItem" val="audit">
+                    {/* <div className="sidebarItem" val="audit">
                         <Link to="/audit">
                             <Icon path={mdiHistory} size="40px"/>
                             <div className="itemTitle"><label>Аудит</label></div>
@@ -37,8 +37,8 @@ class Sidebar extends React.Component {
                             <Icon path={mdiNumeric} size="40px"/>
                             <div className="itemTitle">Обработка номеров</div>
                         </Link>
-                    </div>
-
+                    </div> */}
+                    {this.props.children}
                 </div>
             </div>
         )

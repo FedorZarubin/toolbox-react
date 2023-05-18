@@ -18,13 +18,13 @@ class Tabs extends React.Component {
     render() { 
         const tabsList = this.props.content.map((item,idx)=>{
             return (
-                <div className="tabLabel" key={item[0]} active={(this.state.value==idx).toString()}>
+                <div className="tabLabel" key={item[0]} active={(this.state.value===idx).toString()}>
                     <input 
                         type="radio"    
                         id={"tab"+idx} 
                         name="tabs" 
                         value={idx} 
-                        checked={this.state.value==idx}
+                        checked={this.state.value===idx}
                         onChange={this.onChange}/>
                     <label htmlFor={"tab"+idx}>{item[0]}</label>
                 </div>

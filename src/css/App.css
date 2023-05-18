@@ -312,7 +312,7 @@ html {
   height: 60px;
 }
 
-.sidebarItem:hover a, .go:hover, .btn:hover {
+.sidebarItem:hover a, .go:hover, .btn:hover, .fileInput:hover {
   color: rgb(77, 169, 255);
   transition: 300ms;
 }
@@ -399,7 +399,7 @@ html {
   border: none;
 }
 
-input[type="checkbox"], input[type="radio"] {
+input[type="checkbox"], input[type="radio"], input[type="file"] {
   display: none;
 }
 
@@ -612,3 +612,26 @@ textarea {
   width: 50px;
   text-align: center;
 }
+
+.fileInput {
+  height: 40px;
+  width: 40px;
+  color: white;
+  background-color: rgba(26, 26, 26, 0.5);
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.drag {
+  outline: solid medium rgb(77, 169, 255);
+}
+table {border-collapse: collapse;}
+td, th {
+  border: thin solid black;
+  padding: 5px;
+}
+
+td[status-id="6"] {background-color: rgb(196, 90, 90);}
+td[status-id="4"] {background-color: rgb(91, 138, 38);}
+td[status-id="err"] {background-color: rgb(185, 183, 71);}

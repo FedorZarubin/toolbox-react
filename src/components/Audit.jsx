@@ -159,4 +159,4 @@ class Audit extends React.Component {
     }
 }
 
-export default Audit
+export {Audit}

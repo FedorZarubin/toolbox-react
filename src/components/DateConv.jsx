@@ -139,4 +139,4 @@ class DateConv extends Component {
     }
 }
  
-export default DateConv;
+export {DateConv};

@@ -171,4 +171,4 @@ class PrefsParse extends React.Component {
     }
 }
 
-export default PrefsParse
+export {PrefsParse}

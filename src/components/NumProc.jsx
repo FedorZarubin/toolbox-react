@@ -6,7 +6,7 @@ import ButtonsBar from "./ButtonsBar";
 import TextResult from "./TextResult";
 import RadioBtn from "./RadioBtn";
 import Select from "./Select";
-import _psw from "../auxiliary/_psw";
+import {_psw} from "../auxiliary/_psw";
 
 const initialValues = {
     inpNumbers: "",
@@ -24,7 +24,7 @@ const initialValues = {
     isErr: false
 }
 
-class MFTools extends React.Component {
+class NumProc extends React.Component {
     constructor(props) {
         super(props);
         this.state = props.savedState ? props.savedState : Object.assign({},initialValues);
@@ -39,6 +39,10 @@ class MFTools extends React.Component {
         .then(response=>response.json())
         .then(data=>this.setState({mfbossiList:data}))
         .catch(error=>this.setState({mfbossiList:[["error","Не удалось загрузить команды"]]}))
+    }
+
+    componentWillUnmount () {
+        this.props.saveState(this.state)
     }
 
     handleNumbers (e) {
@@ -106,40 +110,6 @@ class MFTools extends React.Component {
                         result = `echo "*Result*"${curl2file_first}; ${curlBody}${e.target.srvType.value === "7024" ? '; echo "Подождите..."; sleep 10; '+curlBody.replace("_phase1","_phase2") : ''}`
                     }
 
-                    // echo "<RESULT>" > result.xml; 
-                    // for i in 74956467009 74956467066 74956467070 74956467099; 
-                    // do echo "<NUM_$i>" >> result.xml; 
-                    // echo "<SRV_7005>" >> result.xml; 
-                    // curl "http://10.236.26.171/v1/OSA/service_status?ACCOUNT=VATS&MSISDN=$i&PWD=ZxRwgAKG&SERVICE_ID=7005" >> result.xml; 
-                    // echo "</SRV_7005>" >> result.xml; 
-                    // echo "<SRV_7032>" >> result.xml; 
-                    // curl "http://10.236.26.171/v1/OSA/service_status?ACCOUNT=VATS&MSISDN=$i&PWD=ZxRwgAKG&SERVICE_ID=7032" >> result.xml; 
-                    // echo "</SRV_7032>" >> result.xml; echo "<SRV_7024>" >> result.xml; 
-                    // curl "http://10.236.26.171/v1/OSA/service_status?ACCOUNT=VATS&MSISDN=$i&PWD=ZxRwgAKG&SERVICE_ID=7024" >> result.xml; 
-                    // echo "</SRV_7024>" >> result.xml; echo "</NUM_$i>" >> result.xml; 
-                    // sleep 1;
-                    // done; echo "</RESULT>" >> result.xml
-
-                    // echo "*Result*" > result.txt; 
-                    // for i in 74956467009 74956467066 74956467070 74956467099; 
-                    // do echo "---$i---" >> result.txt; 
-                    // curl "http://10.236.26.171/v1/OSA/service_add?ACCOUNT=VATS&MSISDN=$i&PWD=ZxRwgAKG&SERVICE_ID=7005" >> result.txt; 
-                    // echo "OK" >> result.txt; 
-                    // done
-
-                    // echo "*Result*" > result.txt; 
-                    // for i in 74956467009 74956467066 74956467070 74956467099; 
-                    // do echo "---$i---" >> result.txt; 
-                    // curl "http://10.236.26.171/v1/OSA/vats_add_phase1?ACCOUNT=VATS&MSISDN=$i&PWD=ZxRwgAKG&SERVICE_ID=7024" >> result.txt; 
-                    // echo "OK" >> result.txt; 
-                    // done 
-                    // ; echo "Подождите..."; sleep 10; 
-                    // for i in 74956467009 74956467066 74956467070 74956467099; 
-                    // do echo "---$i---" >> result.txt; 
-                    // curl "http://10.236.26.171/v1/OSA/vats_add_phase2?ACCOUNT=VATS&MSISDN=$i&PWD=ZxRwgAKG&SERVICE_ID=7024" >> result.txt; 
-                    // echo "OK" >> result.txt; 
-                    // done
-
                 } else {  // memcache
                     result = `echo "*Result*"${curl2file_first}; for i in ${nums_arr.join(" ")}; do echo -n "$i - "${curl2file_next};curl -s -o /tmp/null -w "%{http_code}" "http://10.50.194.49:6001/api/v1/$i"${curl2file_next};echo${curl2file_next};${curlSleep} done`
                 }
@@ -176,14 +146,6 @@ class MFTools extends React.Component {
                         curValue={this.state.inLineOutSeparator}
                         isMultiple={false}
                     />
-                    {/* <div>
-                        <select name="inLineOutSeparator" onChange={this.handleChange} value={this.state.inLineOutSeparator}>
-                            <option value=" ">пробел</option>
-                            <option value=",">запятая</option>
-                            <option value=";">точка с запятой</option>
-                            <option value="custom">другой</option>
-                        </select>
-                    </div> */}
                     {this.state.inLineOutSeparator === "custom" ?
                         (
                         <React.Fragment>
@@ -208,16 +170,6 @@ class MFTools extends React.Component {
                     curValue={this.state.mfbossiCmd}
                     isMultiple={false}
                 />
-                {/* <div>
-                    <select name="mfbossiCmd" value={this.state.mfbossiCmd} onChange={this.handleChange}>
-                        {this.state.mfbossiList ? this.state.mfbossiList.map((item,idx)=>{
-                            return (<option 
-                                value={idx}
-                                key={"mfbossiCmd"+idx}
-                            >{item[1]}</option>)
-                        }):null}
-                    </select>
-                </div> */}
                 <div><label htmlFor="mfbossiSleep">Интервал между командами (sleep), с</label></div>
                 <div className="generalInput">
                     <input 
@@ -319,4 +271,4 @@ class MFTools extends React.Component {
     }
 }
  
-export default MFTools;
+export {NumProc};
