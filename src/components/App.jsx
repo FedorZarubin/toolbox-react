@@ -4,7 +4,7 @@ import React from 'react';
 import {BrowserRouter, Routes, Route, Link} from "react-router-dom";
 // import sidebarLogo from "../img/logo.svg";
 import Icon from "@mdi/react";
-import { mdiFileTree, mdiHistory, mdiCalendarClockOutline, mdiNumeric, mdiXml} from '@mdi/js'
+import { mdiFileTree, mdiHistory, mdiCalendarClockOutline, mdiNumeric, mdiXml, mdiGiftOutline} from '@mdi/js'
 import Sidebar from "./Sidebar.js";
 import Home from './Home';
 // import Audit from "./Audit.jsx";
@@ -38,6 +38,11 @@ const toolsIndex = {
     path: "xmlParse",
     title: "XML парсер",
     icon: mdiXml
+  },
+  "Promocodes":{
+    path: "promocodes",
+    title: "Промокоды",
+    icon: mdiGiftOutline 
   }
 };
 

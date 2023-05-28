@@ -12,7 +12,7 @@ class Tabs extends React.Component {
     }
     
     onChange (e) {
-        this.setState({value: e.target.value})
+        this.setState({value: Number(e.target.value)})
     }
 
     render() { 

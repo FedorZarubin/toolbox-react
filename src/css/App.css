@@ -135,21 +135,6 @@ html *::-webkit-scrollbar-thumb {
   }
 }
 
-
-.App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #ff8800;
-}
-
 @keyframes Spin {
   from {
     transform: rotate(0deg);
@@ -192,9 +177,27 @@ html *::-webkit-scrollbar-thumb {
   }
 }
 
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #ff8800;
+}
+
 html {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
+}
+
+p {
+  margin: 0;
 }
 
 .itl-logo {
@@ -614,13 +617,22 @@ textarea {
 }
 
 .fileInput {
-  height: 40px;
-  width: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;  
   color: white;
   background-color: rgba(26, 26, 26, 0.5);
   cursor: pointer;
   box-sizing: border-box;
-  text-align: center;
+}
+
+.fileInput > div:first-of-type {
+  padding: 0 10px 5px 10px;
+}
+
+.fileInput > div:last-of-type {
+  padding: 5px 10px 0px 0px;
 }
 
 .drag {
@@ -635,3 +647,48 @@ td, th {
 td[status-id="6"] {background-color: rgb(196, 90, 90);}
 td[status-id="4"] {background-color: rgb(91, 138, 38);}
 td[status-id="err"] {background-color: rgb(185, 183, 71);}
+
+.wizard {
+  margin: 10px;
+  background-color: rgb(60, 60, 60);
+}
+
+.wizardScreenHeader {
+  background-color: rgb(29, 29, 29);
+  height: 50px;
+  font-size: 30px;
+  padding: 5px 10px 5px 10px;
+  box-sizing: border-box;
+}
+
+.wizardScreenBody {
+  box-sizing: border-box;
+  height: 2px;
+  transition: 400ms ease;
+}
+
+.wizardScreenBody > * {
+  margin: 10px;
+  opacity: 0;
+}
+
+.wizardScreenBody.active > * {
+  animation: fade-in 200ms ease 400ms forwards;
+}
+
+.wizardScreenCtrl {
+  display: flex;
+  height: 20px;
+}
+
+.wizardScreenCtrl > div {
+  width: 100%;
+  background-color: rgb(70, 70, 70);
+  text-align: center;
+  cursor: pointer;
+}
+
+.wizardScreenCtrl > div:hover {
+  color: rgb(77, 169, 255);
+  background-color: rgb(80, 80, 80);
+}

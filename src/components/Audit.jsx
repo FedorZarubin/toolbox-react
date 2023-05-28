@@ -70,6 +70,7 @@ class Audit extends React.Component {
                     this.setState({
                         isPending: false,
                         isErr: false,
+                        // eslint-disable-next-line
                         result: `curl '${result.addr[0]}?domain=${domain_name}&f=${ts_beg}&t=${ts_end}' | sed -r 's/\\]\\,\\[\\\"([0-9])/\\]\\,\\n\\[\\\"\\1/g'${searchStr}${comment}`,
                         valuesToRender: formValues
                     })

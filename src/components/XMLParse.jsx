@@ -170,10 +170,12 @@ class XMLParse extends React.Component {
                         ></textarea>
                         <div className="fieldset">
                             <div className="optionsList">
-                                <div><label>Выберите XML файл</label></div>
                                 <div className="fileInput">
-                                    <label htmlFor="inpXMLfile"><Icon path={mdiFileCodeOutline} size="30px" /></label>
-                                    <input id="inpXMLfile" name="inpXMLfile" type="file" accept=".xml" ref={this.fileInput} onChange={(e) => this.handleFiles(e.target.files)}/>
+                                    <div><label htmlFor="inpXMLfile">Выберите XML файл</label></div>
+                                    <div>
+                                        <Icon path={mdiFileCodeOutline} size="30px" />
+                                        <input id="inpXMLfile" name="inpXMLfile" type="file" accept=".xml" ref={this.fileInput} onChange={(e) => this.handleFiles(e.target.files)}/>
+                                    </div>
                                 </div>
                                 {
                                     this.state.result && !this.state.isErr 
