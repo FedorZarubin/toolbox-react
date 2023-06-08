@@ -24,7 +24,7 @@ class ButtonsBar extends React.Component {
     }
 
     render () {
-    const settings = (<Icon className="btn" path={mdiCog} size="30px"/>);
+    const settings = (<Icon className="btn" path={mdiCog} onClick={() => {window.alert("Coming soon...")}} size="30px"/>);
     const clear = (<Icon className="btn" path={mdiBroom} onClick={() => {this.props.clearFunc()}} size="30px"/>);
     const copy = this.state.isCopied 
         ? <Icon className="btn" path={mdiCheck} size="30px" color={"#41ff8a"}/>

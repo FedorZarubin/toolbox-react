@@ -271,7 +271,7 @@ p {
   width: 260px;
 }
 
-.sidebarHeader {
+/* .sidebarHeader {
   position: relative;
   display: flex;
   left: 0;
@@ -284,18 +284,19 @@ p {
   padding-left: 10px;
   align-items: center;
   vertical-align: middle;
-}
+  cursor: pointer;
+} */
 
-.sidebarIcon {
+/* .sidebarIcon {
   width: 40px;
   height: 40px;
-}
+} */
 
 .sidebarItemsList {
   margin-top: 120px;
 }
 
-.sidebarItem {
+.sidebarItem, .sidebarHeader {
   width: 60px;
   height: 60px;
   padding-left: 10px;
@@ -304,7 +305,7 @@ p {
   box-sizing: border-box;
 }
 
-.sidebarItem a {
+.sidebarItem a, .sidebarHeader a {
   display: flex;
   justify-content: left;
   align-items: center;
@@ -315,8 +316,13 @@ p {
   height: 60px;
 }
 
-.sidebarItem:hover a, .go:hover, .btn:hover, .fileInput:hover {
+.sidebarItem:hover a, .sidebarHeader:hover .itemTitle, .go:hover, .btn:hover, .fileInput:hover {
   color: rgb(77, 169, 255);
+  transition: 300ms;
+}
+
+.sidebarHeader:hover svg {
+  color: rgb(255, 136, 0);
   transition: 300ms;
 }
 
@@ -368,6 +374,11 @@ p {
   overflow-y: auto;
   /* position: absolute; */
   /* padding: 10px; */
+}
+
+form {
+  position: relative;
+  z-index: 1;
 }
 
 .fieldset {

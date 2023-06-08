@@ -177,6 +177,7 @@ class XMLParse extends React.Component {
                                         <input id="inpXMLfile" name="inpXMLfile" type="file" accept=".xml" ref={this.fileInput} onChange={(e) => this.handleFiles(e.target.files)}/>
                                     </div>
                                 </div>
+                                <div></div>
                                 {
                                     this.state.result && !this.state.isErr 
                                         ? (
