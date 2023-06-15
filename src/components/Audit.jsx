@@ -63,7 +63,7 @@ class Audit extends React.Component {
             isPending: true,
             result: null
         });
-        fetch("http://localhost:8000/auditSrv/?host="+domain_name)
+        fetch(`http://${window.location.hostname}:8000/auditSrv/?host=`+domain_name)
             .then(response=>[response.json(),response.ok])
             .then(data=>{
                 if (data[1]) data[0].then(result=>{

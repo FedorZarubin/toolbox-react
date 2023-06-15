@@ -35,7 +35,7 @@ class NumProc extends React.Component {
     
     componentDidMount () {
         if (this.state.mfbossiList) return;
-        fetch("http://localhost:8000/mfbossiList/")
+        fetch(`http://${window.location.hostname}:8000/mfbossiList/`)
         .then(response=>response.json())
         .then(data=>this.setState({mfbossiList:data}))
         .catch(error=>this.setState({mfbossiList:[["error","Не удалось загрузить команды"]]}))
