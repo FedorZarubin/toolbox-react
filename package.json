@@ -2,6 +2,7 @@
   "name": "toolbox-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://localhost:3000/toolbox3",
   "dependencies": {
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
