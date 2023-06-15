@@ -703,3 +703,38 @@ td[status-id="err"] {background-color: rgb(185, 183, 71);}
   color: rgb(77, 169, 255);
   background-color: rgb(80, 80, 80);
 }
+
+.individualTariffTable {
+  margin: 10px;
+  
+}
+
+.individualTariffTable thead, .individualTariffTable tr>td:last-of-type {
+  background-color: rgb(60, 60, 60);
+}
+
+.individualTariffTable tbody>tr:hover {
+  background-color: rgb(80, 80, 80);
+}
+
+.individualTariffTable td {
+  padding: 0;
+}
+
+.individualTariffTable tr>td:first-of-type, .individualTariffTable tr>td:last-of-type {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.individualTariffTable tr.inactiveRow>td:first-of-type, .individualTariffTable tr.inactiveRow>td:last-of-type {
+  color: rgb(160, 160, 160);
+}
+
+.individualTariffTable tfoot {
+  height: 40px;
+  background-color: rgb(60, 60, 60);
+}
+
+.individualTariffTable tfoot td:first-of-type {
+  text-align: end;
+}
