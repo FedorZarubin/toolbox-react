@@ -5,7 +5,7 @@ import {BrowserRouter, Routes, Route, Link} from "react-router-dom";
 // import sidebarLogo from "../img/logo.svg";
 import Icon from "@mdi/react";
 import { mdiFileTree, mdiHistory, mdiCalendarClockOutline, mdiNumeric, mdiXml, mdiGiftOutline, mdiBookCogOutline} from '@mdi/js'
-import Sidebar from "./Sidebar.js";
+import Sidebar from "./Sidebar";
 import Home from './Home';
 // import Audit from "./Audit.jsx";
 // import PrefsParse from './PrefsParse.js';
@@ -46,7 +46,7 @@ const toolsIndex = {
   },
   "IndividualTariff":{
     path: "individualTariff",
-    title: "Настройка ИТП",
+    title: "Конструктор ИТП",
     icon: mdiBookCogOutline 
   }
 };
@@ -63,7 +63,7 @@ class App extends React.Component {
   render () {
     return (
       <div className="App">
-        <BrowserRouter basename='/toolbox3'>
+        <BrowserRouter>
           <Sidebar>
             {Object.keys(toolsIndex).map(t=>{
               return (

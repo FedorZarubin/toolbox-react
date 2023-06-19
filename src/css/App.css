@@ -709,7 +709,8 @@ td[status-id="err"] {background-color: rgb(185, 183, 71);}
   
 }
 
-.individualTariffTable thead, .individualTariffTable tr>td:last-of-type {
+.individualTariffTable thead, .individualTariffTable tfoot {
+  height: 40px;
   background-color: rgb(60, 60, 60);
 }
 
@@ -730,11 +731,15 @@ td[status-id="err"] {background-color: rgb(185, 183, 71);}
   color: rgb(160, 160, 160);
 }
 
-.individualTariffTable tfoot {
-  height: 40px;
+.individualTariffTable tr>td:last-of-type {
+  width: 100px;
   background-color: rgb(60, 60, 60);
 }
 
 .individualTariffTable tfoot td:first-of-type {
   text-align: end;
+}
+
+.individualTariffTable .generalInput>input {
+  width: 130px;
 }
