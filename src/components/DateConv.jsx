@@ -73,7 +73,7 @@ class DateConv extends Component {
                     return    
             }
             this.setState({
-                result: Date.parse(d + "T" + t + ".000"+tz_offset),
+                result: String(Date.parse(d + "T" + t + ".000"+tz_offset)/1000),
                 isErr: false
             })
         }
