@@ -14,8 +14,8 @@ const tableMap = [
     {id: "callsrecord", name: "Запись разговоров", countlimit: 3, defaultBlocked: "adjustable", defaultCost: 1500},
     {id: "autocaller", name: "Автоинформирование", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 1000},
     {id: "emotion", name: "Разговоры на повышенных тонах", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000},
-    {id: "bigbusiness", name: "Большой бизнес", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000},
-    {id: "effectiveservice", name: "Эффективное обслуживание", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
+    {id: "bigbusiness", name: "Большой бизнес", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000}
+    // {id: "effectiveservice", name: "Эффективное обслуживание", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
 ];
 
 const initialValues = {
