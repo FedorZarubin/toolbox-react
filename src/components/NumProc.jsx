@@ -89,7 +89,7 @@ class NumProc extends React.Component {
             case "2": // mfbossi
                 const [mfbossi2file_first, mfbossi2file_next] = e.target.mfbossi2file.checked ? [' > result.txt',' >> result.txt'] : ['',''];
                 const mfbossiSleep = Number(e.target.mfbossiSleep.value) > 0 ? '; sleep ' + e.target.mfbossiSleep.value : "";
-                result = `echo "*Result*"${mfbossi2file_first}; for i in ${nums_arr.join(" ")}; do echo "---$i---"${mfbossi2file_next}; ${this.state.mfbossiList[e.target.mfbossiCmd.value][0]}${mfbossi2file_next}${mfbossiSleep}; echo "OK"${mfbossi2file_next}; done`
+                result = `echo "*Result*"${mfbossi2file_first}; for i in ${nums_arr.join(" ")}; do echo "---$i---"${mfbossi2file_next}; ${e.target.mfbossiCmd.value}${mfbossi2file_next}${mfbossiSleep}; echo "OK"${mfbossi2file_next}; done`
                 break;
             case "3": //curl
                 const fileExt = e.target.curlType.value==="srvMgmt" && e.target.srvMgmt_action.value === "status" ? "xml" : "txt";
