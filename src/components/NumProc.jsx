@@ -11,7 +11,7 @@ import {_psw} from "../auxiliary/_psw";
 const initialValues = {
     inpNumbers: "",
     inLineOutSeparator: " ",
-    mfbossiList: null,
+    // mfbossiList: null,
     mfbossiCmd: "activate",
     mfbossiSleep: 1,
     mfbossi2file: false,
@@ -27,7 +27,7 @@ const initialValues = {
 class NumProc extends React.Component {
     constructor(props) {
         super(props);
-        this.state = props.savedState ? props.savedState : Object.assign({},initialValues);
+        this.state = props.savedState ? props.savedState : {...initialValues, mfbossiList: null};
         this.handleNumbers = this.handleNumbers.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleClear = this.handleClear.bind(this)
