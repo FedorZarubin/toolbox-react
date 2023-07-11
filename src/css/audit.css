@@ -29,6 +29,6 @@
     grid-template-columns: 200px auto;
 }
 
-#domain_name {
+/* #domain_name {
     width: calc(100% - 10px);
-}
+} */
