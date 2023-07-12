@@ -98,7 +98,7 @@ function IndividualTariff (props) {
                 const block = e.target[item.id+"_isBlocked"].value === "blocked" ? {Block: true} : {}
                 ext[1].push({
                     Name: item.id,
-                    Min: item.id === "addseat" || item.id === "callsrecord" || item.id === "callback" ? 0 : 1,
+                    Min: item.id === "addseat" ? 0 : 1,
                     Max: item.countlimit,
                     Price: Number(e.target[item.id+"_cost"].value)*100,
                     ...block
