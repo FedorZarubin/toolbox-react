@@ -8,7 +8,7 @@ import ToolHeader from "./ToolHeader";
 class DateConv extends Component {
     constructor(props) {
         super(props);
-        this.state = props.savedState ? props.savedState : {
+        this.state = this.props.savedState ? this.props.savedState : {
             ts: "",
             d: "",
             t: "",
@@ -89,6 +89,11 @@ class DateConv extends Component {
             result: null,
             isErr: false
         })
+    }
+
+    componentWillUnmount () {
+        console.log(this.state.ts)
+        this.props.saveState(this.state)
     }
 
     render() { 

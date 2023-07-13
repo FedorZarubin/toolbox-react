@@ -27,7 +27,7 @@ const initialValues = {
 class NumProc extends React.Component {
     constructor(props) {
         super(props);
-        this.state = props.savedState ? props.savedState : {...initialValues, mfbossiList: null};
+        this.state = this.props.savedState ? this.props.savedState : {...initialValues, mfbossiList: null};
         this.handleNumbers = this.handleNumbers.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleClear = this.handleClear.bind(this)
