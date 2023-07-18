@@ -1,6 +1,6 @@
 import React from "react";
 import Icon from "@mdi/react";
-import { mdiCheck, mdiCog,mdiBroom, mdiContentCopy} from '@mdi/js'
+import { mdiCheck, mdiCog,mdiBroom, mdiContentCopy, mdiClose} from '@mdi/js'
 import spinner from '../img/spinner.svg'
 
 class ButtonsBar extends React.Component {
@@ -47,7 +47,8 @@ class ButtonsBar extends React.Component {
     }
 
     render () {
-    const settings = (<Icon className="btn" path={mdiCog} onClick={() => {window.alert("Coming soon...")}} size="30px"/>);
+    const settings = (<Icon className="btn" path={mdiCog} onClick={() => {this.props.settingsFunc()}} size="30px"/>);
+    const close = (<Icon className="btn" path={mdiClose} onClick={() => {this.props.closeFunc()}} size="30px"/>);
     const clear = (<Icon className="btn" path={mdiBroom} onClick={() => {this.props.clearFunc()}} size="30px"/>);
     const copy = this.state.isCopied 
         ? <Icon className="btn" path={mdiCheck} size="30px" color={"#41ff8a"}/>
@@ -65,6 +66,7 @@ class ButtonsBar extends React.Component {
             <div> {/*align right */}
                 {this.props.buttons.includes("copy")?copy:null}
                 {this.props.buttons.includes("settings")?settings:null}
+                {this.props.buttons.includes("close")?close:null}
                 {typeof(this.props.textToCopy)!=="string" ? <div className="btnCopyField" style={{display:"none"}}>{this.props.textToCopy}</div> : null}
             </div>
         </div>

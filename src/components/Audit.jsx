@@ -5,6 +5,7 @@ import TextResult from "./TextResult";
 import ButtonsBar from "./ButtonsBar";
 import Checkbox from "./Checkbox";
 import RadioBtn from "./RadioBtn"
+import { Modal } from "./Modal";
 
 const initialValues = {
     values: {
@@ -16,13 +17,22 @@ const initialValues = {
         searchStr: "",
         case_sens: false,
         ip: null,
-        postProc: "noneed"    
+        postProc: "noneed",
+        // urlsSettings: ""
     },
     result: {
         text: null,
         isErr: false,
+        clearAfter: null
     },
-    isPending: false
+    isPending: false,
+    settings: {
+        isOpen: false,
+        isErr: false,
+        errText: null,
+        value: "",
+        clearAfter: null
+    }
 };
 
 const storedState = {...initialValues};
@@ -40,6 +50,7 @@ const auditReducer = (state,action)=>{
             const newResult = {
                 text: action.text,
                 isErr: action.isErr,
+                ...(action.clearAfter ? {clearAfter: action.clearAfter} : {})
             };
             storedState.result = newResult;
             return {...state, result:newResult}
@@ -51,6 +62,10 @@ const auditReducer = (state,action)=>{
         }
         case 'set_pending': {
             return {...state, isPending: action.isPending}
+        }
+        case 'set_settings': {
+            const newSettings = {...state.settings, ...action.settings}
+            return {...state, settings: newSettings}
         }
         default:
           return;
@@ -68,6 +83,15 @@ function Audit (props) {
         }
     // eslint-disable-next-line
     },[]);
+
+    useEffect(()=>{
+        if (state.result.clearAfter) {
+            setTimeout(()=>{dispatch({type: "set_result", text: null, isErr: false, clearAfter: null})},state.result.clearAfter*1000)
+        };
+        if (state.settings.clearAfter) {
+            setTimeout(()=>{dispatch({type: "set_settings", settings: {errText: null, isErr: false, clearAfter: null}})},state.settings.clearAfter*1000)
+        }
+    },[state.result.clearAfter, state.settings.clearAfter])
     
     useEffect(()=>{
         fetch(`http://${window.location.hostname}:8000/auditSrv/`)
@@ -223,9 +247,75 @@ function Audit (props) {
     }
 
     const handleClear = () => {dispatch({type: "clear"})}
+
+    const submitNewSettings = (e) => {
+        e.preventDefault();
+        try {
+            const settingsObj = JSON.parse(e.target.urlsSettings.value);
+            const init = {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({data: e.target.urlsSettings.value})
+            }
+            fetch(`http://${window.location.hostname}:8000/auditSrv/`,init)
+                .then(response=>{
+                    if (response.ok) {
+                        urls = settingsObj
+                        dispatch({type: "set_result", isErr: false, text: "Настойки загружены", clearAfter: 3})
+
+                    } else {
+                        dispatch({type: "set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})            
+                    }
+                })
+                .catch(error=>{
+                    console.log(error);
+                    dispatch({type: "set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})
+                })
+                .finally(()=>{dispatch({type: "set_settings", settings:{isOpen: false}})})
+        } catch (err) {
+            console.log(err);
+            dispatch({type: "set_settings",settings:{errText: err.message, isErr: true, clearAfter: 3}});
+        }
+    }
    
     const result = state.result.text ? <TextResult text={state.result.text} error={state.result.isErr}/>: null;
     const buttons = state.result.text ? ["clear","copy","settings"]:["settings"];
+    const settingsContent = (
+        <form onSubmit={submitNewSettings}>
+            <div className="fieldset">
+                <textarea
+                    style={{"height":"50vh"}}
+                    cols={60}
+                    name="urlsSettings"
+                    value={state.settings.value}
+                    onChange={(e)=>{
+                        dispatch({
+                            type: "set_settings",
+                            settings: {value: e.target.value}
+                        })
+                    }}
+                ></textarea>
+            </div>
+            <ButtonsBar
+                buttons={["close"]}
+                closeFunc={()=>{dispatch({
+                    type: "set_settings",
+                    settings: {isOpen: false}
+                })}}
+            />
+        </form>
+    );
+    const settingsDescription = state.settings.isErr ? <p style={{color:"red"}}>{state.settings.errText}</p> : (
+        <>
+            <p>Формат данных:</p>
+            <pre>"vip_ip_адрес_инсталляции":[</pre>
+            <pre>   "audit_url",             </pre>
+            <pre>   "название_инсталляции",  </pre>
+            <pre>   "noneed|sed|jq (рекомендуемая утилита постобработки)"</pre>
+            <pre>]</pre>
+        </>
+    )
+
     return (
         <div className="toolContainer">
             <ToolHeader value="Аудит" />
@@ -271,9 +361,23 @@ function Audit (props) {
                         buttons={buttons} 
                         textToCopy={state.result.text}
                         clearFunc={handleClear}
+                        settingsFunc={()=>{
+                            dispatch({type: "set_settings", settings: {isOpen: true, value: JSON.stringify(urls,null,4)}})
+                        }}
                         />
                 </form>
                 {result}
+                {state.settings.isOpen 
+                    ? <Modal
+                        title="Настройки"
+                        description={settingsDescription}
+                        content={settingsContent}
+                        closeFunc={()=>{dispatch({
+                            type: "set_settings",
+                            settings: {isOpen: false}
+                        })}}
+                    /> 
+                    : null}
             </div>
         </div>
     )

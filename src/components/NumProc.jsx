@@ -6,6 +6,7 @@ import ButtonsBar from "./ButtonsBar";
 import TextResult from "./TextResult";
 import RadioBtn from "./RadioBtn";
 import Select from "./Select";
+import { Modal } from "./Modal";
 import {_psw} from "../auxiliary/_psw";
 
 const initialValues = {
@@ -21,16 +22,28 @@ const initialValues = {
     curlSleep: 1,
     curl2file: false,
     result: null,
-    isErr: false
+    isErr: false,
+    clearResultAfter: null
+};
+
+const settingsState = {
+    settings: {
+        isOpen: false,
+        isErr: false,
+        errText: null,
+        value: "",
+        clearAfter: null
+    }
 }
 
 class NumProc extends React.Component {
     constructor(props) {
         super(props);
-        this.state = this.props.savedState ? this.props.savedState : {...initialValues, mfbossiList: null};
+        this.state = this.props.savedState ? this.props.savedState : {...initialValues, mfbossiList: null, ...settingsState};
         this.handleNumbers = this.handleNumbers.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleClear = this.handleClear.bind(this)
+        this.submitNewSettings = this.submitNewSettings.bind(this)
     }
     
     componentDidMount () {
@@ -39,6 +52,22 @@ class NumProc extends React.Component {
         .then(response=>response.json())
         .then(data=>this.setState({mfbossiList:data}))
         .catch(error=>this.setState({mfbossiList:[["error","Не удалось загрузить команды"]]}))
+    }
+
+    componentDidUpdate () {
+        if (this.state.clearResultAfter) {
+            setTimeout(()=>{
+                this.setState({clearResultAfter: null, result: null, isErr: false})
+            },this.state.clearResultAfter*1000)
+        };
+        if (this.state.settings.clearAfter) {
+            setTimeout(()=>{
+                this.setState((state=>{
+                    return {settings:{...state.settings, errText: null, isErr: false, clearAfter: null}}
+                }))
+            },this.state.settings.clearAfter*1000)
+        }
+
     }
 
     componentWillUnmount () {
@@ -133,9 +162,97 @@ class NumProc extends React.Component {
         this.setState(Object.assign({},initialValues))
     }
 
+    submitNewSettings (e) {
+        e.preventDefault();
+        try {
+            const settingsObj = JSON.parse(e.target.mfbossiSettings.value);
+            const init = {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({data: e.target.mfbossiSettings.value})
+            }
+            fetch(`http://${window.location.hostname}:8000/mfbossiList/`,init)
+                .then(response=>{
+                    if (response.ok) {
+                        this.setState({
+                            result: "Настойки загружены",
+                            isErr: false,
+                            clearResultAfter: 3,
+                            mfbossiList: settingsObj
+                        })                        
+                        // urls = settingsObj
+                        // dispatch({type: "set_result", isErr: false, text: "Настойки загружены", clearAfter: 3})
+
+                    } else {
+                        this.setState({
+                            result: "Загрузка настроек не удалась",
+                            isErr: true,
+                            clearResultAfter: 3
+                        })                        
+                        // dispatch({type: "set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})            
+                    }
+                })
+                .catch(error=>{
+                    console.log(error);
+                    this.setState({
+                        result: "Загрузка настроек не удалась",
+                        isErr: true,
+                        clearResultAfter: 3
+                    })                        
+                    // dispatch({type: "set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})
+                })
+                .finally(()=>{this.setState((state=>{
+                    return {settings:{...state.settings, isOpen: false}}
+                }))})
+        } catch (err) {
+            console.log(err);
+            this.setState((state=>{
+                return {settings:{...state.settings, errText: err.message, isErr: true, clearAfter: 3}}
+            }))
+
+            // dispatch({type: "set_settings",settings:{errText: err.message, isErr: true, clearAfter: 3}});
+        }
+
+    }
+
     render() { 
         const buttons = this.state.result? ["clear","copy","settings"]:["settings"];
         const result = this.state.result? <TextResult text={this.state.result} error={this.state.isErr}/>: null;
+        const settingsContent = (
+            <form onSubmit={this.submitNewSettings}>
+                <div className="fieldset">
+                    <textarea
+                        style={{"height":"50vh"}}
+                        cols={100}
+                        name="mfbossiSettings"
+                        value={this.state.settings.value}
+                        onChange={(e)=>{
+                            this.setState((state=>{
+                                return {settings:{...state.settings, value: e.target.value}}
+                            }))
+                        }}
+                    ></textarea>
+                </div>
+                <ButtonsBar
+                    buttons={["close"]}
+                    closeFunc={()=>{
+                        this.setState((state=>{
+                            return {settings:{...state.settings, isOpen: false}}
+                        }))
+                    }}
+                />
+            </form>
+        );
+        const settingsDescription = this.state.settings.isErr ? <p style={{color:"red"}}>{this.state.settings.errText}</p> : (
+            <>
+                <p>Формат данных:</p>
+                <pre>[                              </pre>
+                <pre>    "шаблон команды mfbossi",  </pre>
+                <pre>    "описание команды mfbossi" </pre>
+                <pre>]                              </pre>
+            </>
+        )
+    
         const inLine = (
                 <div className="optionsList">
                     <div><span>Разделитель номеров в строке</span></div>
@@ -261,10 +378,28 @@ class NumProc extends React.Component {
                             buttons={buttons} 
                             textToCopy={this.state.result}
                             clearFunc={this.handleClear}
+                            settingsFunc={()=>{
+                                this.setState((state=>{
+                                    return {settings:{...state.settings, isOpen: true, value: JSON.stringify(this.state.mfbossiList,null,4)}}
+                                }))    
+                            }}    
                         />
 
                     </form>
                     {result}
+                    {this.state.settings.isOpen 
+                    ? <Modal
+                        title="Настройки"
+                        description={settingsDescription}
+                        content={settingsContent}
+                        closeFunc={()=>{
+                            this.setState((state=>{
+                                return {settings:{...state.settings, isOpen: false}}
+                            }))
+                        }}
+                    /> 
+                    : null}
+
                 </div>
             </div>
         );

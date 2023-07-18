@@ -1,0 +1,43 @@
+.modalShadow {
+    height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0px;
+    z-index: 1;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: rgba(20, 20, 20, 0.7);
+}
+
+.modal {
+    background-color: #5f5f5f;
+    height: fit-content;
+    max-height: 95vh;
+    opacity: 0;
+    animation: fade-in 500ms ease forwards
+}
+
+.modalHeader {
+    height: 60px;
+    font-size: 30px;
+    background-color: #464646;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: right;
+    align-content: center;
+    flex-wrap: wrap;
+    padding-right: 20px;
+}
+
+.modalDescription {
+    padding: 10px;
+}
+
+.modalDescription pre {
+    margin: 0;
+    background-color: #35353586;
+    font-size: 17px;
+}
