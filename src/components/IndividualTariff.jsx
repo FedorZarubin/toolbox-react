@@ -92,7 +92,7 @@ function IndividualTariff (props) {
                 ext[0].push(item.id)
             };
             if (idx === tableMap.length-1) {
-                ext[0] = ext[0].join(",")
+                ext[0] = ext[0].length ? ext[0].join(",") : " "
             };
             if (item.id !== "seatsIncl") {
                 const block = e.target[item.id+"_isBlocked"].value === "blocked" ? {Block: true} : {}
