@@ -7,15 +7,15 @@ import TextResult from "./TextResult";
 const tableMap = [
     {id: "seatsIncl", name: "Количество сотрудников в пакете", countlimit: false, defaultBlocked: null, defaultCost: 1000},
     {id: "addseat", name: "Количество доп. сотрудников", countlimit: 10000, defaultBlocked: "adjustable", defaultCost: 200},
-    {id: "analytics", name: "Аналитика", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
+    {id: "analytics", name: "Аналитика", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 1000},
     {id: "effectivesale", name: "Эффективные продажи", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
     {id: "crm", name: "Интеграция с CRM", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
     {id: "callback", name: "Виджет обратного звонка", countlimit: 50, defaultBlocked: "adjustable", defaultCost: 500},
     {id: "callsrecord", name: "Запись разговоров", countlimit: 3, defaultBlocked: "adjustable", defaultCost: 1500},
     {id: "autocaller", name: "Автоинформирование", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 1000},
     {id: "emotion", name: "Разговоры на повышенных тонах", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000},
-    {id: "bigbusiness", name: "Большой бизнес", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000}
-    // {id: "effectiveservice", name: "Эффективное обслуживание", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
+    {id: "bigbusiness", name: "Большой бизнес", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000},
+    {id: "effectiveservice", name: "Эффективное обслуживание", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
 ];
 
 const initialValues = {
