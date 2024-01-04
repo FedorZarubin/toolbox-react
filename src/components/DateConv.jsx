@@ -1,45 +1,55 @@
-import { Component } from "react";
+// import { Component } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import ButtonsBar from "./ButtonsBar";
 import RadioBtn from "./RadioBtn";
 import Tabs from "./Tabs";
 import TextResult from "./TextResult";
 import ToolHeader from "./ToolHeader";
 
-class DateConv extends Component {
-    constructor(props) {
-        super(props);
-        this.state = this.props.savedState ? this.props.savedState : {
-            ts: "",
-            d: "",
-            t: "",
-            tz1: "msk",
-            tz2: "msk",
-            result: null,
-            isErr: false
-        };
-        this.handleChange = this.handleChange.bind(this)
-        this.handleConvert = this.handleConvert.bind(this)
-        this.handleClear = this.handleClear.bind(this)
+function DateConv() {
+    // constructor(props) {
+    //     super(props);
+    //     this.state = this.props.savedState ? this.props.savedState : {
+    //         ts: "",
+    //         d: "",
+    //         t: "",
+    //         tz1: "msk",
+    //         tz2: "msk",
+    //         result: null,
+    //         isErr: false
+    //     };
+    //     this.handleChange = this.handleChange.bind(this)
+    //     this.handleConvert = this.handleConvert.bind(this)
+    //     this.handleClear = this.handleClear.bind(this)
+    // }
+
+    const state = useSelector((state => state.dateConv));
+    const dispatch = useDispatch();
+
+    const handleChange = (e) => {
+        dispatch({
+            type: "dateConv/set_values",
+            name: e.target.name,
+            newVal: e.target.value
+        })
     }
 
-    handleChange (e) {
-        this.setState({[e.target.name]: e.target.value})
-    }
-
-    handleConvert (e) {
+    const handleConvert = (e) => {
         e.preventDefault();
-        if (e.target.tabs.value==="0") {
+        if (e.target.tabs.value === "0") {
             const ts =  e.target?.ts?.value.trim().replace(/[^0-9]/g, "");
-            if (!ts) {
-                this.setState({
-                result: "Не введены данные!",
-                isErr: true
+            if ( !ts ) {
+                dispatch({
+                    type: "dateConv/set_result",
+                    text: "Не введены данные!",
+                    isErr: true
                 });
                 return
             }
-            if (ts.length!==10&&ts.length!==13){
-                this.setState({
-                    result: "Неверная длина timestamp!",
+            if ( ts.length!==10 && ts.length!==13 ){
+                dispatch({
+                    type: "dateConv/set_result",
+                    text: "Неверная длина timestamp!",
                     isErr: true
                 });
                 return
@@ -56,8 +66,9 @@ class DateConv extends Component {
                 second: "numeric",
                 timeZone: tz
             };
-            this.setState({
-                result: date.toLocaleDateString("ru", options),
+            dispatch({
+                type: "dateConv/set_result",
+                text: date.toLocaleDateString("ru", options),
                 isErr: false
             })
         }
@@ -66,82 +77,78 @@ class DateConv extends Component {
             const t =  e.target?.t?.value || "00:00:00";
             const tz_offset = e.target.tz2.value==="msk" ? "+03:00" : "Z";
             if (!d) {
-                this.setState({
-                    result: "Не введены данные!",
+                dispatch({
+                    type: "dateConv/set_result",
+                    text: "Не введены данные!",
                     isErr: true
                     });
                     return    
             }
-            this.setState({
-                result: String(Date.parse(d + "T" + t + ".000"+tz_offset)/1000),
+            dispatch({
+                type: "dateConv/set_result",
+                text: String(Date.parse(d + "T" + t + ".000"+tz_offset)/1000),
                 isErr: false
             })
         }
     }
 
-    handleClear () {
-        this.setState({
-            ts: "",
-            d: "",
-            t: "",
-            tz1: "msk",
-            tz2: "msk",
-            result: null,
-            isErr: false
+    const handleClear = () => {
+        dispatch({
+            type: 'dateConv/clear'
         })
     }
 
-    componentWillUnmount () {
-        console.log(this.state.ts)
-        this.props.saveState(this.state)
-    }
-
-    render() { 
-        const ts2date = (
-            <div className="optionsList">
-                <div><label htmlFor="ts">Введите timestamp</label></div>
-                <div className="generalInput"><input type="text" name="ts" id="ts" value={this.state.ts} onChange={this.handleChange}/></div>
-                <div><label>Часовой пояс</label></div>
-                <RadioBtn btnName="tz1" btnList={[["msk","МСК"],["utc","UTC"]]} handleChange={this.handleChange} curValue={this.state.tz1}/>
+    // componentWillUnmount () {
+    //     console.log(this.state.ts)
+    //     this.props.saveState(this.state)
+    // }
+ 
+    const ts2date = (
+        <div className="optionsList">
+            <div><label htmlFor="ts">Введите timestamp</label></div>
+            <div className="generalInput"><input type="text" name="ts" id="ts" value={state.values.ts} onChange={handleChange}/></div>
+            <div><label>Часовой пояс</label></div>
+            <RadioBtn btnName="tz1" btnList={[["msk","МСК"],["utc","UTC"]]} handleChange={handleChange} curValue={state.values.tz1}/>
+        </div>
+    );
+    const date2ts = (
+        <div className="optionsList">
+            <div><label htmlFor="ts">Введите дату и время</label></div>
+            <div className="generalInput">
+                <input type="date" name="d" id="d" value={state.values.d} onChange={handleChange}/>
+                <input type="time" name="t" id="t" step="1" value={state.values.t} onChange={handleChange}/>
             </div>
-        );
-        const date2ts = (
-            <div className="optionsList">
-                <div><label htmlFor="ts">Введите дату и время</label></div>
-                <div className="generalInput">
-                    <input type="date" name="d" id="d" value={this.state.d} onChange={this.handleChange}/>
-                    <input type="time" name="t" id="t" step="1" value={this.state.t} onChange={this.handleChange}/>
-                </div>
-                <div><label>Часовой пояс</label></div>
-                <RadioBtn btnName="tz2" btnList={[["msk","МСК"],["utc","UTC"]]} handleChange={this.handleChange} curValue={this.state.tz2}/>
-            </div>
-        );
-        const buttons = this.state.result? ["clear","copy"]:[];
-        const result = this.state.result ? <TextResult text={this.state.result} error={this.state.isErr}/>: null;
-        return (
-            <div className="toolContainer">
-                <ToolHeader value={"Конвертер даты"}/>
-                <div className="toolBody">
-                    <form onSubmit={this.handleConvert}>
-                        <div className="fieldset">
-                            <Tabs
-                                content={[
-                                    ["timestamp в дату", ts2date],
-                                    ["дату в timestamp", date2ts]
-                                ]}
-                            />
-                        </div>
-                        <ButtonsBar
-                            buttons={buttons} 
-                            textToCopy={this.state.result}
-                            clearFunc={this.handleClear}
+            <div><label>Часовой пояс</label></div>
+            <RadioBtn btnName="tz2" btnList={[["msk","МСК"],["utc","UTC"]]} handleChange={handleChange} curValue={state.values.tz2}/>
+        </div>
+    );
+    const buttons = state.result.text ? ["clear","copy"] : [];
+    const result = state.result.text ? <TextResult text={state.result.text} error={state.result.isErr}/> : null;
+    
+    return (
+        <div className="toolContainer">
+            <ToolHeader value={"Конвертер даты"}/>
+            <div className="toolBody">
+                <form onSubmit={handleConvert}>
+                    <div className="fieldset">
+                        <Tabs
+                            content={[
+                                ["timestamp в дату", ts2date],
+                                ["дату в timestamp", date2ts]
+                            ]}
                         />
-                    </form>
-                    {result}
-                </div>
+                    </div>
+                    <ButtonsBar
+                        buttons={buttons} 
+                        textToCopy={state.result.text}
+                        clearFunc={handleClear}
+                    />
+                </form>
+                {result}
             </div>
-        );
-    }
+        </div>
+    )
+    
 }
  
 export {DateConv};

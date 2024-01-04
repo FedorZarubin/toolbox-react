@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import "../css/audit.css";
 import ToolHeader from "./ToolHeader.js";
 import TextResult from "./TextResult";
@@ -7,91 +8,93 @@ import Checkbox from "./Checkbox";
 import RadioBtn from "./RadioBtn"
 import { Modal } from "./Modal";
 
-const initialValues = {
-    values: {
-        domain_name: "",
-        dat_beg: "",
-        time_beg: "",
-        dat_end: "",
-        time_end: "",
-        searchStr: "",
-        case_sens: false,
-        ip: null,
-        postProc: "noneed",
-        // urlsSettings: ""
-    },
-    result: {
-        text: null,
-        isErr: false,
-        clearAfter: null
-    },
-    isPending: false,
-    settings: {
-        isOpen: false,
-        isErr: false,
-        errText: null,
-        value: "",
-        clearAfter: null
-    }
-};
+// const initialValues = {
+//     values: {
+//         domain_name: "",
+//         dat_beg: "",
+//         time_beg: "",
+//         dat_end: "",
+//         time_end: "",
+//         searchStr: "",
+//         case_sens: false,
+//         ip: null,
+//         postProc: "noneed",
+//         // urlsSettings: ""
+//     },
+//     result: {
+//         text: null,
+//         isErr: false,
+//         clearAfter: null
+//     },
+//     isPending: false,
+//     settings: {
+//         isOpen: false,
+//         isErr: false,
+//         errText: null,
+//         value: "",
+//         clearAfter: null
+//     }
+// };
 
-const storedState = {...initialValues};
+// const storedState = {...initialValues};
 
 let urls, timeout, checkDomainReq;
 
-const auditReducer = (state,action)=>{
-    switch (action.type) {
-        case 'set_values': {
-            const newValues = {...state.values, ...action.values};
-            storedState.values = newValues;
-            return {...state, values:newValues}
-        }
-        case 'set_result': {
-            const newResult = {
-                text: action.text,
-                isErr: action.isErr,
-                ...(action.clearAfter ? {clearAfter: action.clearAfter} : {})
-            };
-            storedState.result = newResult;
-            return {...state, result:newResult}
-        }
-        case 'clear': {
-            storedState.values = {...initialValues.values};
-            storedState.result = {...initialValues.result};
-            return initialValues
-        }
-        case 'set_pending': {
-            return {...state, isPending: action.isPending}
-        }
-        case 'set_settings': {
-            const newSettings = {...state.settings, ...action.settings}
-            return {...state, settings: newSettings}
-        }
-        default:
-          return;
-      }
-}
+// const auditReducer = (state,action)=>{
+//     switch (action.type) {
+//         case 'set_values': {
+//             const newValues = {...state.values, ...action.values};
+//             storedState.values = newValues;
+//             return {...state, values:newValues}
+//         }
+//         case 'set_result': {
+//             const newResult = {
+//                 text: action.text,
+//                 isErr: action.isErr,
+//                 ...(action.clearAfter ? {clearAfter: action.clearAfter} : {})
+//             };
+//             storedState.result = newResult;
+//             return {...state, result:newResult}
+//         }
+//         case 'clear': {
+//             storedState.values = {...initialValues.values};
+//             storedState.result = {...initialValues.result};
+//             return initialValues
+//         }
+//         case 'set_pending': {
+//             return {...state, isPending: action.isPending}
+//         }
+//         case 'set_settings': {
+//             const newSettings = {...state.settings, ...action.settings}
+//             return {...state, settings: newSettings}
+//         }
+//         default:
+//           return;
+//       }
+// }
 
 
 function Audit (props) {
     
-    const [state, dispatch] = useReducer(auditReducer, props.savedState || initialValues);
-    
-    useEffect(()=>{
-        return function (){
-            props.saveState(storedState);
-        }
-    // eslint-disable-next-line
-    },[]);
+    // const [state, dispatch] = useReducer(auditReducer, props.savedState || initialValues);
+    const state = useSelector((state => state.audit));
+    const dispatch = useDispatch();
+
+    // useEffect(()=>{
+    //     return function (){
+    //         props.saveState(storedState);
+    //     }
+    // // eslint-disable-next-line
+    // },[]);
 
     useEffect(()=>{
         if (state.result.clearAfter) {
-            setTimeout(()=>{dispatch({type: "set_result", text: null, isErr: false, clearAfter: null})},state.result.clearAfter*1000)
+            setTimeout(()=>{dispatch({type: "audit/set_result", text: null, isErr: false, clearAfter: null})},state.result.clearAfter*1000)
         };
         if (state.settings.clearAfter) {
-            setTimeout(()=>{dispatch({type: "set_settings", settings: {errText: null, isErr: false, clearAfter: null}})},state.settings.clearAfter*1000)
+            setTimeout(()=>{dispatch({type: "audit/set_settings", settings: {errText: null, isErr: false, clearAfter: null}})},state.settings.clearAfter*1000)
         }
-    },[state.result.clearAfter, state.settings.clearAfter])
+    },[state.result.clearAfter, state.settings.clearAfter, dispatch])
     
     useEffect(()=>{
         fetch(`http://${window.location.hostname}:8000/auditSrv/`)
@@ -100,12 +103,12 @@ function Audit (props) {
         .catch (error=> {
             console.log(error);
             dispatch({
-                type: "set_result",
+                type: "audit/set_result",
                 isErr: true,
                 text: error.message,
             })
         })
-    },[]);
+    },[dispatch]);
 
     const checkDomain = (domain, oldReq) => {
         if (oldReq) oldReq.abort();
@@ -117,18 +120,18 @@ function Audit (props) {
             .then(data=>{
                 if (data[1]) data[0].then(result=>{
                     dispatch({
-                        type: "set_values",
+                        type: "audit/set_values",
                         values: {ip: result.ip, postProc: urls[result.ip]?.[2]}
                     });
                     if (!urls[result.ip]) {
                         dispatch({
-                            type: "set_result",
+                            type: "audit/set_result",
                             text: "Unknown IP: "+result.ip,
                             isErr: true
                         });
                     } else if (state.result.isErr) {
                         dispatch({
-                            type: "set_result",
+                            type: "audit/set_result",
                             text: null,
                             isErr: false
                         })
@@ -136,11 +139,11 @@ function Audit (props) {
                 });
                 else data[0].then(result=>{
                     dispatch({
-                        type: "set_values",
+                        type: "audit/set_values",
                         values: {ip: "Error: "+result.detail}
                     });
                     dispatch({
-                        type: "set_result",
+                        type: "audit/set_result",
                         isErr: true,
                         text: "Error: "+result.detail
                     });
@@ -149,11 +152,11 @@ function Audit (props) {
             .catch (error=> {
                 if (!error.message.includes("abort")) {
                     dispatch({
-                        type: "set_values",
+                        type: "audit/set_values",
                         values: {ip: "Error: "+error.message}
                     });
                     dispatch({
-                        type: "set_result",
+                        type: "audit/set_result",
                         isErr: true,
                         text: "Error: "+error.message
                     });
@@ -161,7 +164,7 @@ function Audit (props) {
             })
             .finally(()=>{
                 dispatch({
-                    type: "set_pending",
+                    type: "audit/set_pending",
                     isPending: false
                 })
             })
@@ -170,19 +173,19 @@ function Audit (props) {
 
     const handleChange = (e) => {
         dispatch({
-            type: "set_values",
+            type: "audit/set_values",
             values: {[e.target.name]: e.target.type === "checkbox" ? e.target.checked : e.target.value}
         });
         if (e.target.name === "domain_name") {
             clearTimeout(timeout);
             if (e.target.value === "") {
                 dispatch({
-                    type: "set_values",
+                    type: "audit/set_values",
                     values: {ip: null, postProc: "noneed"}
                 });
                 if (state.result.isErr) {
                     dispatch({
-                        type: "set_result",
+                        type: "audit/set_result",
                         text: null,
                         isErr: false
                     })
@@ -190,7 +193,7 @@ function Audit (props) {
                 return
             }
             dispatch({
-                type: "set_pending",
+                type: "audit/set_pending",
                 isPending: true
             })
             timeout = setTimeout(()=>{
@@ -240,13 +243,13 @@ function Audit (props) {
         const postProc = postProcOptions[formValues.postProc]
         const comment = ` # c ${dat_beg} ${time_beg} до ${dat_end} ${time_end}`;
         dispatch({
-            type: "set_result",
+            type: "audit/set_result",
             isErr: false,
             text: `curl '${urls[ip][0]}?domain=${domain_name}&f=${ts_beg}&t=${ts_end}'${postProc}${searchStr}${comment}`,
         });
     }
 
-    const handleClear = () => {dispatch({type: "clear"})}
+    const handleClear = () => {dispatch({type: "audit/clear"})}
 
     const submitNewSettings = (e) => {
         e.preventDefault();
@@ -261,20 +264,20 @@ function Audit (props) {
                 .then(response=>{
                     if (response.ok) {
                         urls = settingsObj
-                        dispatch({type: "set_result", isErr: false, text: "Настойки загружены", clearAfter: 3})
+                        dispatch({type: "audit/set_result", isErr: false, text: "Настойки загружены", clearAfter: 3})
 
                     } else {
-                        dispatch({type: "set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})            
+                        dispatch({type: "audit/set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})            
                     }
                 })
                 .catch(error=>{
                     console.log(error);
-                    dispatch({type: "set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})
+                    dispatch({type: "audit/set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})
                 })
-                .finally(()=>{dispatch({type: "set_settings", settings:{isOpen: false}})})
+                .finally(()=>{dispatch({type: "audit/set_settings", settings:{isOpen: false}})})
         } catch (err) {
             console.log(err);
-            dispatch({type: "set_settings",settings:{errText: err.message, isErr: true, clearAfter: 3}});
+            dispatch({type: "audit/set_settings",settings:{errText: err.message, isErr: true, clearAfter: 3}});
         }
     }
    
@@ -290,7 +293,7 @@ function Audit (props) {
                     value={state.settings.value}
                     onChange={(e)=>{
                         dispatch({
-                            type: "set_settings",
+                            type: "audit/set_settings",
                             settings: {value: e.target.value}
                         })
                     }}
@@ -299,7 +302,7 @@ function Audit (props) {
             <ButtonsBar
                 buttons={["close"]}
                 closeFunc={()=>{dispatch({
-                    type: "set_settings",
+                    type: "audit/set_settings",
                     settings: {isOpen: false}
                 })}}
             />
@@ -362,7 +365,7 @@ function Audit (props) {
                         textToCopy={state.result.text}
                         clearFunc={handleClear}
                         settingsFunc={()=>{
-                            dispatch({type: "set_settings", settings: {isOpen: true, value: JSON.stringify(urls,null,4)}})
+                            dispatch({type: "audit/set_settings", settings: {isOpen: true, value: JSON.stringify(urls,null,4)}})
                         }}
                         />
                 </form>
@@ -373,7 +376,7 @@ function Audit (props) {
                         description={settingsDescription}
                         content={settingsContent}
                         closeFunc={()=>{dispatch({
-                            type: "set_settings",
+                            type: "audit/set_settings",
                             settings: {isOpen: false}
                         })}}
                     /> 

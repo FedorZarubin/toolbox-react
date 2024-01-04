@@ -1,4 +1,5 @@
-import { useEffect, useReducer } from "react";
+// import { useEffect, useReducer } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import ToolHeader from "./ToolHeader";
 import RadioBtn from "./RadioBtn";
 import Select from "./Select";
@@ -6,57 +7,61 @@ import Wizard from "./Wizard";
 import TextResult from "./TextResult";
 import ButtonsBar from "./ButtonsBar";
 
-const storedState = {
-    values: {
-        promoType: "option",
-        provideType: "offline",
-        services: [],
-        months4Srv: 0,
-        clientType:[],
-        days4Demo: 0,
-        isMultiUse: "no",
-        multiUsePromo: "",
-        multiUseCount: 0,
-        promoCount: 0,
-        champingDesc: "",
-        dateTill: "",
-        promoEmail:"",
-        wizardActiveScreen: 0
-    },
-    result: {
-        text: null,
-        isErr: false
-    }
-}
+// const storedState = {
+//     values: {
+//         promoType: "option",
+//         provideType: "offline",
+//         services: [],
+//         months4Srv: 0,
+//         clientType:[],
+//         days4Demo: 0,
+//         isMultiUse: "no",
+//         multiUsePromo: "",
+//         multiUseCount: 0,
+//         promoCount: 0,
+//         champingDesc: "",
+//         dateTill: "",
+//         promoEmail:"",
+//         wizardActiveScreen: 0
+//     },
+//     result: {
+//         text: null,
+//         isErr: false
+//     }
+// }
 
-const promocodesReducer = (state,action)=>{
-    switch (action.type) {
-        case 'set_values': {
-            const newValues = {...state.values, [action.name]:action.newVal};
-            storedState.values = newValues;
-            return {...state, values:newValues}
-        }
-        case 'set_result': {
-            const newResult = {
-                text: action.text,
-                isErr: action.isErr
-            };
-            storedState.result = newResult;
-            return {...state, result:newResult}
-        }
-        default:
-          return;
-      }
-}
+// const promocodesReducer = (state,action)=>{
+//     switch (action.type) {
+//         case 'set_values': {
+//             const newValues = {...state.values, [action.name]:action.newVal};
+//             storedState.values = newValues;
+//             return {...state, values:newValues}
+//         }
+//         case 'set_result': {
+//             const newResult = {
+//                 text: action.text,
+//                 isErr: action.isErr
+//             };
+//             storedState.result = newResult;
+//             return {...state, result:newResult}
+//         }
+//         default:
+//           return;
+//       }
+// }
 
 function Promocodes (props) {
-    const [state, dispatch] = useReducer(promocodesReducer, props.savedState || storedState);
-    useEffect(()=>{
-        return function (){
-            props.saveState(storedState);
-        }
-    // eslint-disable-next-line
-    },[]);
+    // const [state, dispatch] = useReducer(promocodesReducer, props.savedState || storedState);
+    // useEffect(()=>{
+    //     return function (){
+    //         props.saveState(storedState);
+    //     }
+    // // eslint-disable-next-line
+    // },[]);
+    const state = useSelector((state => state.promocodes));
+    const dispatch = useDispatch();
+
+
     const services = [
         ["analytics","Аналитика"],
         ["callsrecord","Запись"],
@@ -70,9 +75,8 @@ function Promocodes (props) {
     ];
     const [values, result] = [state.values, state.result];
     const buttons = result.text? ["clear","copy"]:[];
-    // const handleChange = function (e) {setValues({...values,[e.target.name]:e.target.value})};
     const handleChange = (e) => {dispatch({
-        type: "set_values",
+        type: "promocodes/set_values",
         name: e.target.name,
         newVal: e.target.value
     })};
@@ -96,12 +100,8 @@ function Promocodes (props) {
         if (values.champingDesc === "") errList.push("Название промокампании");
         if (values.dateTill === "") errList.push("Срок активации");
         if (errList.length) {
-            // setResult({
-            //     text: "Не заполнены или некорректно заполнены следующие поля:\n"+errList.join("\n"),
-            //     isErr: true
-            // });
             dispatch({
-                type: "set_result",
+                type: "promocodes/set_result",
                 text: "Не заполнены или некорректно заполнены следующие поля:\n"+errList.join("\n"),
                 isErr: true
             });
@@ -126,7 +126,7 @@ function Promocodes (props) {
         const limited = values.isMultiUse === "yes" ? " limited "+values.multiUseCount : "";
         const toEmail = values.provideType === "offline" && values.isMultiUse === "no" ? ` to email "${values.promoEmail}"` : ""
         dispatch({
-            type: "set_result",
+            type: "promocodes/set_result",
             text: start+essence+champName+desc+till+limited+toEmail,
             isErr: false
         });
