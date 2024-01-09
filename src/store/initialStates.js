@@ -72,6 +72,48 @@ const initialStates = {
             text: null,
             isErr: false
         }
+    },
+    numProc: {
+        values: {
+            inpNumbers: "",
+            inLineOutSeparator: " ",
+            mfbossiCmd: "activate",
+            mfbossiSleep: 1,
+            mfbossi2file: false,
+            curlType: "srvMgmt",
+            srvMgmt_action: "status",
+            srvType: "7005",
+            curlSleep: 1,
+            curl2file: false
+        },
+        result: {
+            text: null,
+            isErr: false
+        },
+        clearResultAfter: null
+    },
+    xmlParse: {
+        values: {
+            inpXML: "",
+            filterSrv: "",
+            filterStatus: "",
+        },
+        srvList: null,
+        result: {
+            text: null,
+            isErr: false,
+        }
+    },
+    individualTariff: {
+        values: {
+            domain_name: "",
+            operationType: "set",
+            seatsIncl_count: 7
+        },
+        result: {
+            text: null,
+            isErr: false
+        }
     }
 } 
 

@@ -298,7 +298,7 @@ function Promocodes (props) {
                     <ButtonsBar
                         buttons={buttons} 
                         textToCopy={result.text}
-                        // clearFunc={()=>{setValues(initialValues);setResult({text: null, isErr: false})}}                
+                        clearFunc={()=>dispatch({ type: "promocodes/clear"})}                
                     />
                 </form>
                 {result.text && <TextResult text={result.text} error={result.isErr}/>}

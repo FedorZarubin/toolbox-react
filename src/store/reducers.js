@@ -43,6 +43,9 @@ const reducers = {
                 };
                 return {...state, result:newResult}
             }
+            case 'promocodes/clear': {
+                return initialStates.promocodes
+            }
             default:
               return state;
           }
@@ -102,8 +105,82 @@ const reducers = {
             default:
                 return state;
         }
-    }
+    },
 
+    numProc(state = initialStates.numProc, action) {
+        switch (action.type) {
+            case 'numProc/set_values': {
+                const newValues = {...state.values, [action.name]:action.newVal};
+                return {...state, values:newValues}
+            }
+            case 'numProc/set_result': {
+                const newResult = {
+                    text: action.text,
+                    isErr: action.isErr
+                };
+                return {...state, clearResultAfter: action.clearResultAfter || null, result: newResult}
+            }
+            case 'numProc/clear': {
+                return { ...state, ...initialStates.numProc}
+            }
+            case 'numProc/clearResultByTimeout': {
+                return { ...state, clearResultAfter: null, result: initialStates.numProc.result}
+            }
+
+            default:
+                return state;
+        }
+    },
+
+    xmlParse(state = initialStates.xmlParse, action) {
+        switch (action.type) {
+            case 'xmlParse/set_values': {
+                const newValues = {...state.values, [action.name]:action.newVal};
+                return {...state, values:newValues}
+            }
+            case 'xmlParse/set_result': {
+                const newResult = {
+                    text: action.text,
+                    isErr: action.isErr
+                };
+                const newState = {...state, result: newResult};
+                if (action.srvList) {
+                    newState.srvList = action.srvList;
+                    newState.values.filterSrv = "";
+                    newState.values.filterStatus = "";
+                }
+                return newState
+            }
+            case 'xmlParse/clear': {
+                return initialStates.xmlParse
+            }
+
+            default:
+                return state;
+        }
+    },
+    
+    individualTariff(state = initialStates.individualTariff, action) {
+        switch (action.type) {
+            case 'individualTariff/set_values': {
+                const newValues = {...state.values, [action.name]:action.newVal};
+                return {...state, values:newValues}
+            }
+            case 'individualTariff/set_result': {
+                const newResult = {
+                    text: action.text,
+                    isErr: action.isErr
+                };
+                return {...state, result:newResult}
+            }
+            case 'individualTariff/clear': {
+                return initialStates.individualTariff
+            }
+            default:
+              return state;
+          }
+    
+    }
 }
 
 export default reducers

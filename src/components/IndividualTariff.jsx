@@ -1,4 +1,5 @@
-import { useEffect, useReducer } from "react";
+// import { useEffect, useReducer } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import ButtonsBar from "./ButtonsBar";
 import ToolHeader from "./ToolHeader";
 import RadioBtn from "./RadioBtn";
@@ -9,70 +10,73 @@ const tableMap = [
     {id: "addseat", name: "Количество доп. сотрудников", countlimit: 10000, defaultBlocked: "adjustable", defaultCost: 200},
     {id: "analytics", name: "Аналитика", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 1000},
     {id: "effectivesale", name: "Эффективные продажи", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
+    {id: "effectiveservice", name: "Эффективное обслуживание", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
     {id: "crm", name: "Интеграция с CRM", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
     {id: "callback", name: "Виджет обратного звонка", countlimit: 50, defaultBlocked: "adjustable", defaultCost: 500},
     {id: "callsrecord", name: "Запись разговоров", countlimit: 3, defaultBlocked: "adjustable", defaultCost: 1500},
     {id: "autocaller", name: "Автоинформирование", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 1000},
     {id: "emotion", name: "Разговоры на повышенных тонах", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000},
     {id: "bigbusiness", name: "Большой бизнес", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000},
-    {id: "effectiveservice", name: "Эффективное обслуживание", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 500},
 ];
 
-const initialValues = {
-    values: {
-        domain_name: "",
-        operationType: "set",
-        seatsIncl_count: 7
-    },
-    result: {
-        text: null,
-        isErr: false
-    }
-}
+// const initialValues = {
+//     values: {
+//         domain_name: "",
+//         operationType: "set",
+//         seatsIncl_count: 7
+//     },
+//     result: {
+//         text: null,
+//         isErr: false
+//     }
+// }
 
-const storedState = {...initialValues};
+// const storedState = {...initialValues};
 
-const individualTariffReducer = (state,action)=>{
-    switch (action.type) {
-        case 'set_values': {
-            const newValues = {...state.values, [action.name]:action.newVal};
-            storedState.values = newValues;
-            return {...state, values:newValues}
-        }
-        case 'set_result': {
-            const newResult = {
-                text: action.text,
-                isErr: action.isErr
-            };
-            storedState.result = newResult;
-            return {...state, result:newResult}
-        }
-        case 'clear': {
-            storedState.values = {...initialValues.values};
-            storedState.result = {...initialValues.result};
-            return initialValues
-        }
-        default:
-          return;
-      }
-}
+// const individualTariffReducer = (state,action)=>{
+//     switch (action.type) {
+//         case 'set_values': {
+//             const newValues = {...state.values, [action.name]:action.newVal};
+//             storedState.values = newValues;
+//             return {...state, values:newValues}
+//         }
+//         case 'set_result': {
+//             const newResult = {
+//                 text: action.text,
+//                 isErr: action.isErr
+//             };
+//             storedState.result = newResult;
+//             return {...state, result:newResult}
+//         }
+//         case 'clear': {
+//             storedState.values = {...initialValues.values};
+//             storedState.result = {...initialValues.result};
+//             return initialValues
+//         }
+//         default:
+//           return;
+//       }
+// }
 
 
 function IndividualTariff (props) {
     let sum = 0;
     const rows = [];
-    const [state, dispatch] = useReducer(individualTariffReducer, props.savedState || initialValues);
-    useEffect(()=>{
-        return function (){
-            props.saveState(storedState);
-        }
-    // eslint-disable-next-line
-    },[]);
+    // const [state, dispatch] = useReducer(individualTariffReducer, props.savedState || initialValues);
+    const state = useSelector((state => state.individualTariff));
+    const dispatch = useDispatch();
+
+    // useEffect(()=>{
+    //     return function (){
+    //         props.saveState(storedState);
+    //     }
+    // // eslint-disable-next-line
+    // },[]);
     const buttons = state.result.text ? ["clear","copy"] : [];
-    const result = state.result.text ? <TextResult text={state.result.text} error={state.result.isErr}/>: null;
+    const result = state.result.text ? <TextResult text={state.result.text} error={state.result.isErr}/> : null;
 
     const handleChange = (e) => {dispatch({
-        type: "set_values",
+        type: "individualTariff/set_values",
         name: e.target.name,
         newVal: !isNaN(parseInt(e.target.value)) ? parseInt(e.target.value) : e.target.value
     })};
@@ -81,7 +85,7 @@ function IndividualTariff (props) {
         e.preventDefault();
         if (!e.target.domain_name.value.trim()) {
             dispatch({
-                type: "set_result",
+                type: "individualTariff/set_result",
                 text: "Не указан домен!",
                 isErr: true    
             });
@@ -116,7 +120,7 @@ function IndividualTariff (props) {
             `record ${e.target.callsrecord_count.value} callback ${e.target.callback_count.value} `+
             `extensions '${extString}' json tariff '${JSON.stringify(tariffJson)}'`
         dispatch({
-            type: "set_result",
+            type: "individualTariff/set_result",
             text: result,
             isErr: false
         })
@@ -219,7 +223,7 @@ function IndividualTariff (props) {
                     <ButtonsBar
                         buttons={buttons}
                         textToCopy={state.result.text}
-                        clearFunc={()=>{dispatch({type:"clear"})}}
+                        clearFunc={()=>{dispatch({type:"individualTariff/clear"})}}
                     />
                 </form>
                 {result}

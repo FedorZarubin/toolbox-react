@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Checkbox from "./Checkbox";
 import Tabs from "./Tabs";
 import ToolHeader from "./ToolHeader";
@@ -9,22 +10,21 @@ import Select from "./Select";
 import { Modal } from "./Modal";
 import {_psw} from "../auxiliary/_psw";
 
-const initialValues = {
-    inpNumbers: "",
-    inLineOutSeparator: " ",
-    // mfbossiList: null,
-    mfbossiCmd: "activate",
-    mfbossiSleep: 1,
-    mfbossi2file: false,
-    curlType: "srvMgmt",
-    srvMgmt_action: "status",
-    srvType: "7005",
-    curlSleep: 1,
-    curl2file: false,
-    result: null,
-    isErr: false,
-    clearResultAfter: null
-};
+// const initialValues = {
+//     inpNumbers: "",
+//     inLineOutSeparator: " ",
+//     mfbossiCmd: "activate",
+//     mfbossiSleep: 1,
+//     mfbossi2file: false,
+//     curlType: "srvMgmt",
+//     srvMgmt_action: "status",
+//     srvType: "7005",
+//     curlSleep: 1,
+//     curl2file: false,
+//     result: null,
+//     isErr: false,
+//     clearResultAfter: null
+// };
 
 const settingsState = {
     settings: {
@@ -36,69 +36,84 @@ const settingsState = {
     }
 }
 
-class NumProc extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = this.props.savedState ? this.props.savedState : {...initialValues, mfbossiList: null, ...settingsState};
-        this.handleNumbers = this.handleNumbers.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.handleClear = this.handleClear.bind(this)
-        this.submitNewSettings = this.submitNewSettings.bind(this)
-    }
+let mfbossiList;
+
+function NumProc() {
+    // constructor(props) {
+    //     super(props);
+    //     this.state = this.props.savedState ? this.props.savedState : {...initialValues, mfbossiList: null, ...settingsState};
+    //     this.handleNumbers = this.handleNumbers.bind(this)
+    //     this.handleChange = this.handleChange.bind(this)
+    //     this.handleClear = this.handleClear.bind(this)
+    //     this.submitNewSettings = this.submitNewSettings.bind(this)
+    // }
     
-    componentDidMount () {
-        if (this.state.mfbossiList) return;
+    const [settings, setSettings] = useState(settingsState.settings);
+    const state = useSelector((state => state.numProc));
+    const dispatch = useDispatch();
+
+
+    // componentDidMount () {
+    useEffect( () => {
+        if (mfbossiList) return;
         fetch(`http://${window.location.hostname}:8000/mfbossiList/`)
-        .then(response=>response.json())
-        .then(data=>this.setState({mfbossiList:data}))
-        .catch(error=>this.setState({mfbossiList:[["error","Не удалось загрузить команды"]]}))
-    }
+        .then(response => response.json())
+        .then(data => { mfbossiList = data })
+        .catch(error => { 
+            mfbossiList = [["error","Не удалось загрузить команды"]];
+            console.log(error)
+        })
+    },[])
+    
 
-    componentDidUpdate () {
-        if (this.state.clearResultAfter) {
+    // componentDidUpdate () {
+    useEffect( () => {
+        if (state.clearResultAfter) {
             setTimeout(()=>{
-                this.setState({clearResultAfter: null, result: null, isErr: false})
-            },this.state.clearResultAfter*1000)
+                dispatch({
+                    type: "numProc/clearResultByTimeout"
+                })
+            },state.clearResultAfter*1000)
         };
-        if (this.state.settings.clearAfter) {
+        if (settings.clearAfter) {
             setTimeout(()=>{
-                this.setState((state=>{
-                    return {settings:{...state.settings, errText: null, isErr: false, clearAfter: null}}
+                setSettings((settings => {
+                    return {...settings, errText: null, isErr: false, clearAfter: null}
                 }))
-            },this.state.settings.clearAfter*1000)
+            },settings.clearAfter*1000)
         }
+    })
 
-    }
 
-    componentWillUnmount () {
-        this.props.saveState(this.state)
-    }
+    // componentWillUnmount () {
+    //     this.props.saveState(this.state)
+    // }
 
-    handleNumbers (e) {
+    const handleNumbers = (e) => {
         e.preventDefault();
-        // console.log(new FormData(e.target).getAll("srvType"));
 
         //preparing source num list
         const data = e.target.inpNumbers.value.trim();
-        if (data==="") {
-            this.setState({
-                result: "Введите номера в тектовое поле!",
+        if (data === "") {
+            dispatch({
+                type: "numProc/set_result",
+                text: "Введите номера в тектовое поле!",
                 isErr: true
             });
             return;
         };
         const inp_separator = data.match(/\n/)?.[0] || data.match(/;/)?.[0] || data.match(/,/)?.[0] || " ";
-        // console.log(inp_separator);
-        const nums_arr = data.split(inp_separator).map(num=>{
+        const nums_arr = data.split(inp_separator).map(num => {
             num = num.trim().replace(/[^0-9]/g, "");
             if (num.length === 10) num = "7" + num;
             else if (num.match(/^[78]\d{10}$/)) num = num.replace(/^8/, "7");
             else if (num !== "") num = num + " (!Некорректный формат номера!)";
             return num;
-        }).filter((num,i,arr)=>num!==""&&arr.lastIndexOf(num)===i); //remove repeated numbers
-        if (nums_arr.some(i=>i.match(/Некорректный формат номера/))) { // error
-            this.setState({
-                result: "В списке есть некорректные номера!\n\n"+nums_arr.join("\n"),
+        }).filter( (num, i, arr) => num !== "" && arr.lastIndexOf(num) === i ); //remove repeated numbers
+        if ( nums_arr.some( i => i.match(/Некорректный формат номера/) ) ) { // error
+            dispatch({
+                type: "numProc/set_result",
+                text: "В списке есть некорректные номера!\n\n"+nums_arr.join("\n"),
                 isErr: true
             });
             return;
@@ -147,22 +162,29 @@ class NumProc extends React.Component {
             default:
                 break;
         };
-        this.setState({
-            result: result,
+        dispatch({
+            type: "numProc/set_result",
+            text: result,
             isErr: false
         });
 
     }
     
-    handleChange (e) {
-        this.setState({[e.target.name]: e.target.type==="checkbox" ? e.target.checked : e.target.value})
+    const handleChange = (e) => {
+        dispatch({
+            type: "numProc/set_values",
+            name: [e.target.name],
+            newVal: e.target.value
+        })
     }
 
-    handleClear () {
-        this.setState(Object.assign({},initialValues))
+    const handleClear = () => {
+        dispatch({
+            type: "numProc/clear"
+        })
     }
 
-    submitNewSettings (e) {
+    const submitNewSettings = (e) => {
         e.preventDefault();
         try {
             const settingsObj = JSON.parse(e.target.mfbossiSettings.value);
@@ -174,236 +196,234 @@ class NumProc extends React.Component {
             fetch(`http://${window.location.hostname}:8000/mfbossiList/`,init)
                 .then(response=>{
                     if (response.ok) {
-                        this.setState({
-                            result: "Настойки загружены",
+                        mfbossiList = settingsObj;
+                        dispatch({
+                            type: "numProc/set_result",
+                            text: "Настойки загружены",
                             isErr: false,
                             clearResultAfter: 3,
-                            mfbossiList: settingsObj
                         })                        
-                        // urls = settingsObj
-                        // dispatch({type: "set_result", isErr: false, text: "Настойки загружены", clearAfter: 3})
-
                     } else {
-                        this.setState({
-                            result: "Загрузка настроек не удалась",
+                        dispatch({
+                            type: "numProc/set_result",
+                            text: "Загрузка настроек не удалась",
                             isErr: true,
                             clearResultAfter: 3
                         })                        
-                        // dispatch({type: "set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})            
                     }
                 })
                 .catch(error=>{
                     console.log(error);
-                    this.setState({
-                        result: "Загрузка настроек не удалась",
+                    dispatch({
+                        type: "numProc/set_result",
+                        text: "Загрузка настроек не удалась",
                         isErr: true,
                         clearResultAfter: 3
                     })                        
-                    // dispatch({type: "set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})
                 })
-                .finally(()=>{this.setState((state=>{
-                    return {settings:{...state.settings, isOpen: false}}
+                .finally(() => {setSettings((settings => {
+                    return {...settings, isOpen: false}
                 }))})
         } catch (err) {
             console.log(err);
-            this.setState((state=>{
-                return {settings:{...state.settings, errText: err.message, isErr: true, clearAfter: 3}}
+            setSettings((settings=>{
+                return {...settings, errText: err.message, isErr: true, clearAfter: 3}
             }))
-
-            // dispatch({type: "set_settings",settings:{errText: err.message, isErr: true, clearAfter: 3}});
         }
-
     }
-
-    render() { 
-        const buttons = this.state.result? ["clear","copy","settings"]:["settings"];
-        const result = this.state.result? <TextResult text={this.state.result} error={this.state.isErr}/>: null;
-        const settingsContent = (
-            <form onSubmit={this.submitNewSettings}>
-                <div className="fieldset">
-                    <textarea
-                        style={{"height":"50vh"}}
-                        cols={100}
-                        name="mfbossiSettings"
-                        value={this.state.settings.value}
-                        onChange={(e)=>{
-                            this.setState((state=>{
-                                return {settings:{...state.settings, value: e.target.value}}
-                            }))
-                        }}
-                    ></textarea>
-                </div>
-                <ButtonsBar
-                    buttons={["close"]}
-                    closeFunc={()=>{
-                        this.setState((state=>{
-                            return {settings:{...state.settings, isOpen: false}}
+ 
+    const buttons = state.result.text ? ["clear","copy","settings"] : ["settings"];
+    const result = state.result.text ? <TextResult text={state.result.text} error={state.result.isErr}/> : null;
+    const settingsContent = (
+        <form onSubmit={submitNewSettings}>
+            <div className="fieldset">
+                <textarea
+                    style={{"height":"50vh"}}
+                    cols={100}
+                    name="mfbossiSettings"
+                    value={settings.value}
+                    onChange={(e)=>{
+                        setSettings((settings => {
+                            return {...settings, value: e.target.value}
                         }))
                     }}
-                />
-            </form>
-        );
-        const settingsDescription = this.state.settings.isErr ? <p style={{color:"red"}}>{this.state.settings.errText}</p> : (
-            <>
-                <p>Формат данных:</p>
-                <pre>[                              </pre>
-                <pre>    "шаблон команды mfbossi",  </pre>
-                <pre>    "описание команды mfbossi" </pre>
-                <pre>]                              </pre>
-            </>
-        )
-    
-        const inLine = (
-                <div className="optionsList">
-                    <div><span>Разделитель номеров в строке</span></div>
-                    <Select
-                        selectName="inLineOutSeparator"
-                        optList={[[" ","пробел"],[",","запятая"],[";","точка с запятой"],["custom","другой"]]}
-                        handleChange={this.handleChange}
-                        curValue={this.state.inLineOutSeparator}
-                        isMultiple={false}
-                    />
-                    {this.state.inLineOutSeparator === "custom" ?
-                        (
-                        <React.Fragment>
-                                <div><label>Введите разделитель</label></div>
-                                <div className="generalInput"><input type="text" name="inLineCustomSeparator" onChange={this.handleChange} value={this.state.inLineCustomSeparator}/></div>
-                        </React.Fragment> 
-                        ) : null}
-                </div>
-        );
-        const inColumn = (
-            <div className="param-row">
-                <div><span>Нет настраиваемых параметров</span></div>
+                ></textarea>
             </div>
-        );
-        const mfbossi = (
+            <ButtonsBar
+                buttons={["close"]}
+                closeFunc={() => {
+                    setSettings((settings => {
+                        return {...settings, isOpen: false}
+                    }))
+                }}
+            />
+        </form>
+    );
+    const settingsDescription = settings.isErr ? <p style={{color:"red"}}>{settings.errText}</p> : (
+        <>
+            <p>Формат данных:</p>
+            <pre>[                              </pre>
+            <pre>    "шаблон команды mfbossi",  </pre>
+            <pre>    "описание команды mfbossi" </pre>
+            <pre>]                              </pre>
+        </>
+    )
+
+    const inLine = (
             <div className="optionsList">
-                <div><label>Выберите команду</label></div>
+                <div><span>Разделитель номеров в строке</span></div>
                 <Select
-                    selectName="mfbossiCmd"
-                    optList={this.state.mfbossiList}
-                    handleChange={this.handleChange}
-                    curValue={this.state.mfbossiCmd}
+                    selectName="inLineOutSeparator"
+                    optList={[[" ","пробел"],[",","запятая"],[";","точка с запятой"],["custom","другой"]]}
+                    handleChange={handleChange}
+                    curValue={state.values.inLineOutSeparator}
                     isMultiple={false}
                 />
-                <div><label htmlFor="mfbossiSleep">Интервал между командами (sleep), с</label></div>
-                <div className="generalInput">
-                    <input 
-                        type="number" 
-                        name="mfbossiSleep" 
-                        id="mfbossiSleep" 
-                        value={this.state.mfbossiSleep}
-                        onChange={this.handleChange}
-                    />
-                </div>
-                <div><label htmlFor="mfbossi2file">Записать вывод в файл</label></div>
-                <Checkbox
-                    cbName="mfbossi2file" 
-                    isChecked={this.state.mfbossi2file}
-                    handleChange={this.handleChange}
-                />
-            </div>
-        );
-        const curl = (
-            <div className="optionsList">
-                <div><label>Выберите тип</label></div>
-                <RadioBtn 
-                    btnName="curlType" 
-                    btnList={[["srvMgmt", "Управление услугами"],["memcache", "Проверка в memcache"]]}
-                    handleChange={this.handleChange}
-                    curValue={this.state.curlType}
-                />
-                {this.state.curlType==="srvMgmt" ? (
+                {state.values.inLineOutSeparator === "custom" ?
+                    (
                     <React.Fragment>
-                        <div><label>Выберите действие</label></div>
-                        <RadioBtn 
-                            btnName="srvMgmt_action" 
-                            btnList={[["status", "Проверка"],["add", "Включение"],["del","Отключение"]]}
-                            handleChange={this.handleChange}
-                            curValue={this.state.srvMgmt_action}
-                        />
-                        <div><label>{"Выберите услугу(и)"}</label></div>
-                        <Select
-                            selectName="srvType"
-                            optList={[["7005", "Мультифон (7005)"],["7032", "eMotion (7032)"],["7024","inServices (7024)"],["7048","Мультифон ВАТС (7048)"]]}
-                            handleChange={this.handleChange}
-                            curValue={this.state.srvType}
-                            isMultiple={this.state.srvMgmt_action==="status"}
-                        />
-                    </React.Fragment>)
-                    : null
-                }
-                <div><label htmlFor="curlSleep">Интервал между командами (sleep), с</label></div>
-                <div className="generalInput">
-                    <input 
-                        type="number" 
-                        name="curlSleep" 
-                        id="curlSleep" 
-                        value={this.state.curlSleep}
-                        onChange={this.handleChange}
-                    />
-                </div>
-                <div><label htmlFor="curlSleep">Записать вывод в файл</label></div>
-                <Checkbox
-                    cbName="curl2file" 
-                    isChecked={this.state.curl2file}
-                    handleChange={this.handleChange}
+                            <div><label>Введите разделитель</label></div>
+                            <div className="generalInput"><input type="text" name="inLineCustomSeparator" onChange={handleChange} value={state.values.inLineCustomSeparator}/></div>
+                    </React.Fragment> 
+                    ) : null}
+            </div>
+    );
+    const inColumn = (
+        <div className="param-row">
+            <div><span>Нет настраиваемых параметров</span></div>
+        </div>
+    );
+    const mfbossi = (
+        <div className="optionsList">
+            <div><label>Выберите команду</label></div>
+            <Select
+                selectName="mfbossiCmd"
+                optList={mfbossiList}
+                handleChange={handleChange}
+                curValue={state.values.mfbossiCmd}
+                isMultiple={false}
+            />
+            <div><label htmlFor="mfbossiSleep">Интервал между командами (sleep), с</label></div>
+            <div className="generalInput">
+                <input 
+                    type="number" 
+                    name="mfbossiSleep" 
+                    id="mfbossiSleep" 
+                    value={state.values.mfbossiSleep}
+                    onChange={handleChange}
                 />
             </div>
-        )
-        return (
-            <div className="toolContainer">
-                <ToolHeader value="Обработка номеров"/>
-                <div className="toolBody">
-                    <form onSubmit={this.handleNumbers}>
-                        <textarea 
-                            rows="8" 
-                            name="inpNumbers" 
-                            placeholder="Введите номера в столбец или в строку через пробел, запятую или точку с запятой"
-                            value={this.state.inpNumbers}
-                            onChange={this.handleChange}
-                        ></textarea>
-                        <div className="fieldset">
-                            <Tabs
-                                content={[
-                                    ["В строку",inLine],
-                                    ["В столбец",inColumn],
-                                    ["mfbossi",mfbossi],
-                                    ["curl",curl]
-                                ]}
-                            />  
-                        </div>
-                        <ButtonsBar 
-                            buttons={buttons} 
-                            textToCopy={this.state.result}
-                            clearFunc={this.handleClear}
-                            settingsFunc={()=>{
-                                this.setState((state=>{
-                                    return {settings:{...state.settings, isOpen: true, value: JSON.stringify(this.state.mfbossiList,null,4)}}
-                                }))    
-                            }}    
-                        />
-
-                    </form>
-                    {result}
-                    {this.state.settings.isOpen 
-                    ? <Modal
-                        title="Настройки"
-                        description={settingsDescription}
-                        content={settingsContent}
-                        closeFunc={()=>{
-                            this.setState((state=>{
-                                return {settings:{...state.settings, isOpen: false}}
-                            }))
-                        }}
-                    /> 
-                    : null}
-
-                </div>
+            <div><label htmlFor="mfbossi2file">Записать вывод в файл</label></div>
+            <Checkbox
+                cbName="mfbossi2file" 
+                isChecked={state.values.mfbossi2file}
+                handleChange={handleChange}
+            />
+        </div>
+    );
+    const curl = (
+        <div className="optionsList">
+            <div><label>Выберите тип</label></div>
+            <RadioBtn 
+                btnName="curlType" 
+                btnList={[["srvMgmt", "Управление услугами"],["memcache", "Проверка в memcache"]]}
+                handleChange={handleChange}
+                curValue={state.values.curlType}
+            />
+            {state.values.curlType === "srvMgmt" ? (
+                <React.Fragment>
+                    <div><label>Выберите действие</label></div>
+                    <RadioBtn 
+                        btnName="srvMgmt_action" 
+                        btnList={[["status", "Проверка"],["add", "Включение"],["del","Отключение"]]}
+                        handleChange={handleChange}
+                        curValue={state.values.srvMgmt_action}
+                    />
+                    <div><label>{"Выберите услугу(и)"}</label></div>
+                    <Select
+                        selectName="srvType"
+                        optList={[["7005", "Мультифон (7005)"],["7032", "eMotion (7032)"],["7024","inServices (7024)"],["7048","Мультифон ВАТС (7048)"]]}
+                        handleChange={handleChange}
+                        curValue={state.values.srvType}
+                        isMultiple={state.values.srvMgmt_action==="status"}
+                    />
+                </React.Fragment>)
+                : null
+            }
+            <div><label htmlFor="curlSleep">Интервал между командами (sleep), с</label></div>
+            <div className="generalInput">
+                <input 
+                    type="number" 
+                    name="curlSleep" 
+                    id="curlSleep" 
+                    value={state.values.curlSleep}
+                    onChange={handleChange}
+                />
             </div>
-        );
-    }
+            <div><label htmlFor="curlSleep">Записать вывод в файл</label></div>
+            <Checkbox
+                cbName="curl2file" 
+                isChecked={state.values.curl2file}
+                handleChange={handleChange}
+            />
+        </div>
+    )
+    return (
+        <div className="toolContainer">
+            <ToolHeader value="Обработка номеров"/>
+            <div className="toolBody">
+                <form onSubmit={handleNumbers}>
+                    <textarea 
+                        rows="8" 
+                        name="inpNumbers" 
+                        placeholder="Введите номера в столбец или в строку через пробел, запятую или точку с запятой"
+                        value={state.values.inpNumbers}
+                        onChange={handleChange}
+                    ></textarea>
+                    <div className="fieldset">
+                        <Tabs
+                            content={[
+                                ["В строку",inLine],
+                                ["В столбец",inColumn],
+                                ["mfbossi",mfbossi],
+                                ["curl",curl]
+                            ]}
+                        />  
+                    </div>
+                    <ButtonsBar 
+                        buttons={buttons} 
+                        textToCopy={state.result.text}
+                        clearFunc={handleClear}
+                        settingsFunc={()=>{
+                            setSettings((settings => {
+                                return {
+                                    ...settings, 
+                                    isOpen: true, 
+                                    value: JSON.stringify(mfbossiList, null, 4)
+                                }
+                            }))    
+                        }}    
+                    />
+
+                </form>
+                {result}
+                {settings.isOpen 
+                ? <Modal
+                    title="Настройки"
+                    description={settingsDescription}
+                    content={settingsContent}
+                    closeFunc={()=>{
+                        setSettings((settings => {
+                            return {...settings, isOpen: false}
+                        }))
+                    }}
+                /> 
+                : null}
+
+            </div>
+        </div>
+    );
+    
 }
  
 export {NumProc};
