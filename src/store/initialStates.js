@@ -17,13 +17,6 @@ const initialStates = {
             clearAfter: null
         },
         isPending: false,
-        settings: {
-            isOpen: false,
-            isErr: false,
-            errText: null,
-            value: "",
-            clearAfter: null
-        }
     },
     promocodes: {
         values: {

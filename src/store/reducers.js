@@ -21,10 +21,6 @@ const reducers = {
             case 'audit/set_pending': {
                 return {...state, isPending: action.isPending}
             }
-            case 'audit/set_settings': {
-                const newSettings = {...state.settings, ...action.settings}
-                return {...state, settings: newSettings}
-            }
             default:
               return state;
           }

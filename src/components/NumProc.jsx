@@ -10,21 +10,6 @@ import Select from "./Select";
 import { Modal } from "./Modal";
 import {_psw} from "../auxiliary/_psw";
 
-// const initialValues = {
-//     inpNumbers: "",
-//     inLineOutSeparator: " ",
-//     mfbossiCmd: "activate",
-//     mfbossiSleep: 1,
-//     mfbossi2file: false,
-//     curlType: "srvMgmt",
-//     srvMgmt_action: "status",
-//     srvType: "7005",
-//     curlSleep: 1,
-//     curl2file: false,
-//     result: null,
-//     isErr: false,
-//     clearResultAfter: null
-// };
 
 const settingsState = {
     settings: {
@@ -39,21 +24,12 @@ const settingsState = {
 let mfbossiList;
 
 function NumProc() {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = this.props.savedState ? this.props.savedState : {...initialValues, mfbossiList: null, ...settingsState};
-    //     this.handleNumbers = this.handleNumbers.bind(this)
-    //     this.handleChange = this.handleChange.bind(this)
-    //     this.handleClear = this.handleClear.bind(this)
-    //     this.submitNewSettings = this.submitNewSettings.bind(this)
-    // }
     
     const [settings, setSettings] = useState(settingsState.settings);
     const state = useSelector((state => state.numProc));
     const dispatch = useDispatch();
 
-
-    // componentDidMount () {
+    // componentDidMount 
     useEffect( () => {
         if (mfbossiList) return;
         fetch(`http://${window.location.hostname}:8000/mfbossiList/`)
@@ -65,8 +41,7 @@ function NumProc() {
         })
     },[])
     
-
-    // componentDidUpdate () {
+    // componentDidUpdate 
     useEffect( () => {
         if (state.clearResultAfter) {
             setTimeout(()=>{
@@ -83,11 +58,6 @@ function NumProc() {
             },settings.clearAfter*1000)
         }
     })
-
-
-    // componentWillUnmount () {
-    //     this.props.saveState(this.state)
-    // }
 
     const handleNumbers = (e) => {
         e.preventDefault();

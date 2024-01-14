@@ -1,4 +1,3 @@
-// import { useEffect, useReducer } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ButtonsBar from "./ButtonsBar";
 import ToolHeader from "./ToolHeader";
@@ -19,59 +18,13 @@ const tableMap = [
     {id: "bigbusiness", name: "Большой бизнес", countlimit: 1, defaultBlocked: "adjustable", defaultCost: 2000},
 ];
 
-// const initialValues = {
-//     values: {
-//         domain_name: "",
-//         operationType: "set",
-//         seatsIncl_count: 7
-//     },
-//     result: {
-//         text: null,
-//         isErr: false
-//     }
-// }
-
-// const storedState = {...initialValues};
-
-// const individualTariffReducer = (state,action)=>{
-//     switch (action.type) {
-//         case 'set_values': {
-//             const newValues = {...state.values, [action.name]:action.newVal};
-//             storedState.values = newValues;
-//             return {...state, values:newValues}
-//         }
-//         case 'set_result': {
-//             const newResult = {
-//                 text: action.text,
-//                 isErr: action.isErr
-//             };
-//             storedState.result = newResult;
-//             return {...state, result:newResult}
-//         }
-//         case 'clear': {
-//             storedState.values = {...initialValues.values};
-//             storedState.result = {...initialValues.result};
-//             return initialValues
-//         }
-//         default:
-//           return;
-//       }
-// }
-
-
 function IndividualTariff (props) {
     let sum = 0;
     const rows = [];
-    // const [state, dispatch] = useReducer(individualTariffReducer, props.savedState || initialValues);
+
     const state = useSelector((state => state.individualTariff));
     const dispatch = useDispatch();
 
-    // useEffect(()=>{
-    //     return function (){
-    //         props.saveState(storedState);
-    //     }
-    // // eslint-disable-next-line
-    // },[]);
     const buttons = state.result.text ? ["clear","copy"] : [];
     const result = state.result.text ? <TextResult text={state.result.text} error={state.result.isErr}/> : null;
 

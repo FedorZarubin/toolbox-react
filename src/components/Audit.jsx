@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "../css/audit.css";
 import ToolHeader from "./ToolHeader.js";
@@ -8,93 +8,37 @@ import Checkbox from "./Checkbox";
 import RadioBtn from "./RadioBtn"
 import { Modal } from "./Modal";
 
-// const initialValues = {
-//     values: {
-//         domain_name: "",
-//         dat_beg: "",
-//         time_beg: "",
-//         dat_end: "",
-//         time_end: "",
-//         searchStr: "",
-//         case_sens: false,
-//         ip: null,
-//         postProc: "noneed",
-//         // urlsSettings: ""
-//     },
-//     result: {
-//         text: null,
-//         isErr: false,
-//         clearAfter: null
-//     },
-//     isPending: false,
-//     settings: {
-//         isOpen: false,
-//         isErr: false,
-//         errText: null,
-//         value: "",
-//         clearAfter: null
-//     }
-// };
-
-// const storedState = {...initialValues};
+const settingsState = {
+    settings: {
+        isOpen: false,
+        isErr: false,
+        errText: null,
+        value: "",
+        clearAfter: null
+    }
+}
 
 let urls, timeout, checkDomainReq;
 
-// const auditReducer = (state,action)=>{
-//     switch (action.type) {
-//         case 'set_values': {
-//             const newValues = {...state.values, ...action.values};
-//             storedState.values = newValues;
-//             return {...state, values:newValues}
-//         }
-//         case 'set_result': {
-//             const newResult = {
-//                 text: action.text,
-//                 isErr: action.isErr,
-//                 ...(action.clearAfter ? {clearAfter: action.clearAfter} : {})
-//             };
-//             storedState.result = newResult;
-//             return {...state, result:newResult}
-//         }
-//         case 'clear': {
-//             storedState.values = {...initialValues.values};
-//             storedState.result = {...initialValues.result};
-//             return initialValues
-//         }
-//         case 'set_pending': {
-//             return {...state, isPending: action.isPending}
-//         }
-//         case 'set_settings': {
-//             const newSettings = {...state.settings, ...action.settings}
-//             return {...state, settings: newSettings}
-//         }
-//         default:
-//           return;
-//       }
-// }
-
-
 function Audit (props) {
     
-    // const [state, dispatch] = useReducer(auditReducer, props.savedState || initialValues);
+    const [settings, setSettings] = useState(settingsState.settings);
+
     const state = useSelector((state => state.audit));
     const dispatch = useDispatch();
-
-    // useEffect(()=>{
-    //     return function (){
-    //         props.saveState(storedState);
-    //     }
-    // // eslint-disable-next-line
-    // },[]);
 
     useEffect(()=>{
         if (state.result.clearAfter) {
             setTimeout(()=>{dispatch({type: "audit/set_result", text: null, isErr: false, clearAfter: null})},state.result.clearAfter*1000)
         };
-        if (state.settings.clearAfter) {
-            setTimeout(()=>{dispatch({type: "audit/set_settings", settings: {errText: null, isErr: false, clearAfter: null}})},state.settings.clearAfter*1000)
+        if (settings.clearAfter) {
+            setTimeout(()=>{
+                setSettings((settings => {
+                    return {...settings, errText: null, isErr: false, clearAfter: null}
+                }))
+            },settings.clearAfter*1000)
         }
-    },[state.result.clearAfter, state.settings.clearAfter, dispatch])
+    },[state.result.clearAfter, settings.clearAfter, dispatch])
     
     useEffect(()=>{
         fetch(`http://${window.location.hostname}:8000/auditSrv/`)
@@ -274,10 +218,12 @@ function Audit (props) {
                     console.log(error);
                     dispatch({type: "audit/set_result", isErr: true, text: "Загрузка настроек не удалась", clearAfter: 3})
                 })
-                .finally(()=>{dispatch({type: "audit/set_settings", settings:{isOpen: false}})})
+                .finally(() => {
+                    setSettings(settings => ({...settings, isOpen: false}))
+                })
         } catch (err) {
             console.log(err);
-            dispatch({type: "audit/set_settings",settings:{errText: err.message, isErr: true, clearAfter: 3}});
+            setSettings(settings => ({...settings, errText: err.message, isErr: true, clearAfter: 3}));
         }
     }
    
@@ -290,25 +236,17 @@ function Audit (props) {
                     style={{"height":"50vh"}}
                     cols={60}
                     name="urlsSettings"
-                    value={state.settings.value}
-                    onChange={(e)=>{
-                        dispatch({
-                            type: "audit/set_settings",
-                            settings: {value: e.target.value}
-                        })
-                    }}
+                    value={settings.value}
+                    onChange={(e) => {setSettings(settings => ({...settings, value: e.target.value}))}}
                 ></textarea>
             </div>
             <ButtonsBar
                 buttons={["close"]}
-                closeFunc={()=>{dispatch({
-                    type: "audit/set_settings",
-                    settings: {isOpen: false}
-                })}}
+                closeFunc={() => setSettings(settings => ({...settings, isOpen: false}))}
             />
         </form>
     );
-    const settingsDescription = state.settings.isErr ? <p style={{color:"red"}}>{state.settings.errText}</p> : (
+    const settingsDescription = settings.isErr ? <p style={{color:"red"}}>{settings.errText}</p> : (
         <>
             <p>Формат данных:</p>
             <pre>"vip_ip_адрес_инсталляции":[</pre>
@@ -365,20 +303,17 @@ function Audit (props) {
                         textToCopy={state.result.text}
                         clearFunc={handleClear}
                         settingsFunc={()=>{
-                            dispatch({type: "audit/set_settings", settings: {isOpen: true, value: JSON.stringify(urls,null,4)}})
+                            setSettings(settings => ({...settings, isOpen: true, value: JSON.stringify(urls,null,4)}))
                         }}
                         />
                 </form>
                 {result}
-                {state.settings.isOpen 
+                {settings.isOpen 
                     ? <Modal
                         title="Настройки"
                         description={settingsDescription}
                         content={settingsContent}
-                        closeFunc={()=>{dispatch({
-                            type: "audit/set_settings",
-                            settings: {isOpen: false}
-                        })}}
+                        closeFunc={() => setSettings(settings => ({...settings, isOpen: false}))}
                     /> 
                     : null}
             </div>

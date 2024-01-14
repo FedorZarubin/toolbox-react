@@ -9,26 +9,6 @@ import jObjProc from "../auxiliary/prefsFunc"
 import Select from "./Select";
 
 function PrefsParse() {
-    // constructor (props) {
-    //     super(props);
-    //     this.state = props.savedState ? props.savedState : {
-    //         sourcePrefs: "",
-    //         jsonToEdit: "",
-    //         outJson: null,
-    //         selectedPrefsBlock: "All",
-    //         result: null,
-    //         isPending: false,
-    //         isErr: false
-    //     };
-    //     this.handleClear = this.handleClear.bind(this);
-    //     this.handleChange = this.handleChange.bind(this);
-    //     this.handleParse = this.handleParse.bind(this);
-    //     this.jsonToPrefs = this.jsonToPrefs.bind(this);
-    // }
-    
-    // componentWillUnmount(){
-    //     this.props.saveState(this.state)
-    // }
 
     const state = useSelector((state => state.prefsParse));
     const dispatch = useDispatch();
@@ -40,24 +20,12 @@ function PrefsParse() {
     }
 
     const handleChange = (e) => {
-        // if (e.target.name==="prefs") this.setState({sourcePrefs: e.target.value});
-        // else this.setState({jsonToEdit: e.target.value});
         dispatch({
             type: "prefsParse/set_values",
             name: e.target.name,
             newVal: e.target.value
         })
     }
-
-    // selectChange (e) {
-    //     this.setState((state)=>{
-    //         state.jsonToEdit = JSON.stringify(e.target.value==="All" ? state.outJson : { [e.target.value]: state.outJson[e.target.value] }, null, 4);
-    //         return {
-    //             jsonToEdit: state.jsonToEdit,
-    //             selectedPrefsBlock: e.target.value
-    //             }
-    //     })
-    // }
 
     const handleParse = (e) => {
         e.preventDefault();
@@ -66,12 +34,6 @@ function PrefsParse() {
             type: "prefsParse/set_pending",
             isPending: true
         });
-        // const getJson = new Promise((resolve, reject) => resolve(ITooLabs.CData.decode(prefs)));
-        // getJson.then((val)=>{this.setState({
-        //     isPending: false,
-        //     outJson: val,
-        //     jsonToEdit: JSON.stringify(val,null,4)
-        //     })})
         setTimeout(() => {
             dispatch({
                 type: "prefsParse/parse",

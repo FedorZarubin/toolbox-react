@@ -1,4 +1,3 @@
-// import { Component } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ButtonsBar from "./ButtonsBar";
 import RadioBtn from "./RadioBtn";
@@ -7,21 +6,6 @@ import TextResult from "./TextResult";
 import ToolHeader from "./ToolHeader";
 
 function DateConv() {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = this.props.savedState ? this.props.savedState : {
-    //         ts: "",
-    //         d: "",
-    //         t: "",
-    //         tz1: "msk",
-    //         tz2: "msk",
-    //         result: null,
-    //         isErr: false
-    //     };
-    //     this.handleChange = this.handleChange.bind(this)
-    //     this.handleConvert = this.handleConvert.bind(this)
-    //     this.handleClear = this.handleClear.bind(this)
-    // }
 
     const state = useSelector((state => state.dateConv));
     const dispatch = useDispatch();
@@ -97,11 +81,6 @@ function DateConv() {
             type: 'dateConv/clear'
         })
     }
-
-    // componentWillUnmount () {
-    //     console.log(this.state.ts)
-    //     this.props.saveState(this.state)
-    // }
  
     const ts2date = (
         <div className="optionsList">

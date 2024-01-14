@@ -7,16 +7,6 @@ import Select from "./Select";
 import Icon from '@mdi/react';
 import { mdiFileCodeOutline } from '@mdi/js';
 
-// const initialValues = {
-//     inpXML: "",
-//     result: null,
-//     hash: "",
-//     isErr: false,
-//     isDragging: false, // local state
-//     srvList: null,
-//     filterSrv: "",
-//     filterStatus: ""
-// };
 const srvMap = {
     "7005":"Мультифон (7005)",
     "7032":"eMotion (7032)",
@@ -25,32 +15,12 @@ const srvMap = {
 };
 
 function XMLParse() {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = props.savedState ? props.savedState : Object.assign({},initialValues);
-    //     this.fileInput = React.createRef();
-    //     this.handleChange = this.handleChange.bind(this);
-    //     this.handleClear = this.handleClear.bind(this)
-    //     this.handleDragNDrop = this.handleDragNDrop.bind(this)
-    //     this.handleFiles = this.handleFiles.bind(this)
-    //     this.handleXML = this.handleXML.bind(this)
-    //     this.buildTable = this.buildTable.bind(this)
-    // }
-    
-    // componentWillUnmount () {
-    //     this.props.saveState(this.state)
-    // }
     
     const state = useSelector((state => state.xmlParse));
     const dispatch = useDispatch();
 
     const [isDragging, setDragging] = useState(false);
     const fileInput = useRef(null);
-
-    // handleChange (e) {
-    //     this.setState({[e.target.name]: e.target.type==="checkbox" ? e.target.checked : e.target.value})
-    // }
-
 
     const handleChange = (e) => {
         dispatch({
@@ -60,17 +30,11 @@ function XMLParse() {
         })
     }
 
-    
-    // handleClear () {
-    //     this.setState(Object.assign({},initialValues))
-    // }
-
     const handleClear = () => {
         dispatch({
             type: "xmlParse/clear"
         })
     }
-
 
     const handleDragNDrop = (e) => {
         e.stopPropagation();
@@ -148,7 +112,6 @@ function XMLParse() {
     }
 
     const buildTable = (rows) => {
-        // console.log(rows.length);
         const statusNames = ['NOT ORDERED','ORDERED /WAIT FOR PAYMENT','ORDERED /WAIT FOR ADD','ON','WAIT FOR DELETE','OFF'];
         return (
             <table>
@@ -183,7 +146,6 @@ function XMLParse() {
         )
     }
 
-    
     const buttons = state.result.text ? ["clear","copy"] : [];
     const rows = state.result.text && !state.result.isErr && state.values.filterSrv && state.values.filterStatus 
         ? state.result.text.split("\n").filter(tr => {

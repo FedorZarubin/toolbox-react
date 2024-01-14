@@ -1,4 +1,3 @@
-// import { useEffect, useReducer } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ToolHeader from "./ToolHeader";
 import RadioBtn from "./RadioBtn";
@@ -7,57 +6,8 @@ import Wizard from "./Wizard";
 import TextResult from "./TextResult";
 import ButtonsBar from "./ButtonsBar";
 
-// const storedState = {
-//     values: {
-//         promoType: "option",
-//         provideType: "offline",
-//         services: [],
-//         months4Srv: 0,
-//         clientType:[],
-//         days4Demo: 0,
-//         isMultiUse: "no",
-//         multiUsePromo: "",
-//         multiUseCount: 0,
-//         promoCount: 0,
-//         champingDesc: "",
-//         dateTill: "",
-//         promoEmail:"",
-//         wizardActiveScreen: 0
-//     },
-//     result: {
-//         text: null,
-//         isErr: false
-//     }
-// }
-
-// const promocodesReducer = (state,action)=>{
-//     switch (action.type) {
-//         case 'set_values': {
-//             const newValues = {...state.values, [action.name]:action.newVal};
-//             storedState.values = newValues;
-//             return {...state, values:newValues}
-//         }
-//         case 'set_result': {
-//             const newResult = {
-//                 text: action.text,
-//                 isErr: action.isErr
-//             };
-//             storedState.result = newResult;
-//             return {...state, result:newResult}
-//         }
-//         default:
-//           return;
-//       }
-// }
-
 function Promocodes (props) {
-    // const [state, dispatch] = useReducer(promocodesReducer, props.savedState || storedState);
-    // useEffect(()=>{
-    //     return function (){
-    //         props.saveState(storedState);
-    //     }
-    // // eslint-disable-next-line
-    // },[]);
+
     const state = useSelector((state => state.promocodes));
     const dispatch = useDispatch();
 

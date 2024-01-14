@@ -1,5 +1,5 @@
 import '../css/App.css';
-import React, {useState} from 'react';
+import React from 'react';
 import {Link, createBrowserRouter, RouterProvider, Outlet, Navigate} from "react-router-dom";
 import Icon from "@mdi/react";
 import { mdiFileTree, mdiHistory, mdiCalendarClockOutline, mdiNumeric, mdiXml, mdiGiftOutline, mdiBookCogOutline} from '@mdi/js'
@@ -67,16 +67,11 @@ function Layout () {
 }
 
 
-function App () {
-  const initialState = Object.keys(toolsIndex).reduce((obj, i) => Object.assign(obj, {[i]: null}), {});
-  const [state, setState] = useState(initialState);
-  
+function App () { 
   const toolsRoutes = Object.keys(toolsIndex).map(t=>{
     return { 
       path: toolsIndex[t].path,
       element: React.createElement(require('./'+t)[t],{
-        savedState: state[t],
-        saveState: (toolState)=>(setState({...state, [t]:toolState})),
         title: toolsIndex[t].title
       })
       }
