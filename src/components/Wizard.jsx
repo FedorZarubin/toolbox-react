@@ -36,10 +36,10 @@ function Wizard (props) {
                     </div>
                     {activeScreen === i && (
                         <div className="wizardScreenCtrl">
-                            {i === (props.screens.length-1) && <div onClick={()=>{handleSwitchScreen(0)}}><Icon path={mdiChevronDoubleUp} size="20px"/></div>}
-                            {i !== 0 && <div onClick={()=>{handleSwitchScreen(activeScreen-1)}}><Icon path={mdiChevronUp} size="20px"/></div>}
-                            {i !== (props.screens.length-1) && <div onClick={()=>{handleSwitchScreen(activeScreen+1)}}><Icon path={mdiChevronDown} size="20px"/></div>}
-                            {i === (props.screens.length-1) && props.finishFunc && <div onClick={(e)=>{props.finishFunc(e)}}><Icon path={mdiCheck} size="20px"/></div>}
+                            {i === (props.screens.length-1) && <div onClick={()=>{handleSwitchScreen(0)}}><Icon path={mdiChevronDoubleUp} size="30px"/></div>}
+                            {i !== 0 && <div onClick={()=>{handleSwitchScreen(activeScreen-1)}}><Icon path={mdiChevronUp} size="30px"/></div>}
+                            {i !== (props.screens.length-1) && <div onClick={()=>{handleSwitchScreen(activeScreen+1)}}><Icon path={mdiChevronDown} size="30px"/></div>}
+                            {i === (props.screens.length-1) && props.finishFunc && <div onClick={(e)=>{props.finishFunc(e)}}><Icon path={mdiCheck} size="30px"/></div>}
                         </div>
                     )}
                 </div>

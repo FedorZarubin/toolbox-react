@@ -200,7 +200,7 @@ function Promocodes (props) {
             <div className="generalInput">
                 <input 
                     type="text" 
-                    size="100"
+                    size="80"
                     name="champingDesc" 
                     id="champingDesc" 
                     value={values.champingDesc}
